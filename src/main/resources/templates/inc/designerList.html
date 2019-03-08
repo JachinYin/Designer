@@ -1,0 +1,40 @@
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+
+<div class="main" th:fragment="inc">
+    <div class="designerAuditList">
+        <div class="head-box">
+            <span class="filter">筛选</span>
+            <span class="static">统计数据</span>
+        </div>
+        <div class="table">
+            <el-table :data="templateList" border :height="600" tooltip-effect="light">
+                <el-table-column align="center" label="设计师ID" prop="id" width="125px"></el-table-column>
+                <el-table-column align="center" label="设计师名字" prop="name" width="190px"
+                                 show-overflow-tooltip></el-table-column>
+            </el-table>
+        </div>
+        <div class="pageNav">
+            <el-pagination
+                    layout="prev, pager, next"
+                    :total="1000"
+                    style="padding-top: 12px"
+            >
+            </el-pagination>
+        </div>
+    </div>
+    <script>
+        let designerAuditList = new Vue({
+            el: '.designerAuditList',
+            data: {
+                templateList: [
+                    {
+                        name: '换天宫',
+                        id: 0
+                    },
+                ]
+            },
+            methods: {}
+        })
+    </script>
+
+</div>

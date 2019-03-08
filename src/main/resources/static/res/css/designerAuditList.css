@@ -1,0 +1,35 @@
+
+.designerAuditList{
+    width: 1100px;
+    margin: auto;
+}
+
+.designerAuditList .head-box{
+    text-align: center;
+    height: 50px;
+    border-radius: 15px 15px 0 0 ;
+    background-color: white;
+}
+
+.designerAuditList .head-box .filter, .static{
+    position: relative;
+    top: 12px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+.designerAuditList .head-box .filter:hover{
+    color: #3a8ee6;
+}
+.designerAuditList .head-box .static:hover{
+    color: #5daf34;
+}
+
+.designerAuditList .table{
+}
+
+.designerAuditList .pageNav {
+    text-align: center;
+    height: 50px;
+    background-color: white;
+    border-radius: 0 0 15px 15px;
+}
