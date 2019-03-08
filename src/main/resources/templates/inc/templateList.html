@@ -105,4 +105,28 @@
             }
         });
     </script>
+
+    <button onclick="add()">add</button>
+    <script>
+        let temp =  {
+            aid: 1,
+                tempId: 1,
+                name: "测试模板",
+                time: "2019-03-08 18:50:21",
+                status: 1,
+                price: 25.6
+        };
+        function add() {
+            console.log("添加");
+            $.ajax({
+                url:'/addTemplate',
+                data:{
+                    template: JSON.stringify(temp),
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            })
+        }
+    </script>
 </div>

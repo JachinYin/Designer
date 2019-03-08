@@ -34,9 +34,12 @@ public class TemplateController {
     @GetMapping("/addTemplate")
     public String addTemplate(@RequestParam("template")String template){
         Param param = Param.parseParam(template);
-        if(param.getBoolean("success")){
-            return WebDesigner.getRetParam(false,"add template error;参数错误").toJson();
-        }
+
+        System.out.println(param.toJson());
+//
+//        if(param.getBoolean("success")){
+//            return WebDesigner.getRetParam(false,"add template error;参数错误").toJson();
+//        }
 
         try{
             Template templatePojo = new Template();
@@ -45,8 +48,8 @@ public class TemplateController {
             templatePojo.setName(param.getString("name"));
             templatePojo.setTime(param.getString("time"));
             templatePojo.setStatus(param.getInt("status"));
-            templatePojo.setPrice(param.getInt(""));
-
+            templatePojo.setPrice(param.getDouble("price"));
+            templateMapper.addTemplate(templatePojo);
         }catch (Exception e){
             return WebDesigner.getRetParam(false,"add template error;参数错误").toJson();
         }
