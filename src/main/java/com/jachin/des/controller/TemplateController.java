@@ -24,11 +24,11 @@ public class TemplateController {
 
     @ResponseBody
     @GetMapping("/getTemplateList")
-    public String getTemplateList(){
+    public List<Template> getTemplateList(){
         List<Template> templateList = templateMapper.findAll();
-        Param param = new Param();
-        return param.setObject("list", templateList).setString("msg", "测试mybatis").toJson();
-    }
+//        return param.setObject("list", templateList).setString("msg", "测试mybatis").toJson();
+        return templateList;
+}
 
 
     @GetMapping("/addTemplate")

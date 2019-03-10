@@ -9,6 +9,7 @@ public class Template {
     private int aid;
     private int tempId;
     private String name;
+    private String designer;
     private String time;
     private int status;
     private double price;
@@ -45,6 +46,14 @@ public class Template {
         this.name = name;
     }
 
+    public String getDesigner() {
+        return designer;
+    }
+
+    public void setDesigner(String designer) {
+        this.designer = designer;
+    }
+
     public String getTime() {
         return time;
     }
@@ -68,4 +77,19 @@ public class Template {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Template{" +
+                "id=" + id +
+                ", aid=" + aid +
+                ", tempId=" + tempId +
+                ", name='" + name + '\'' +
+                ", designer='" + designer + '\'' +
+                ", time='" + time + '\'' +
+                ", status=" + status +
+                ", price=" + price +
+                '}';
+    }
 }
+

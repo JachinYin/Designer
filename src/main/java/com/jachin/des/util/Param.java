@@ -266,8 +266,9 @@ public class Param extends HashMap {
 
     }
 
-    /**/
-
+    /*
+    * 将JSON 解释为Param 对象
+    * */
     public static Param parseParam(String json) {
         Param param = new Param();
         try {
@@ -279,7 +280,7 @@ public class Param extends HashMap {
                 param.setObject(key, val);
             }
         }catch (Exception e){
-            return WebDesigner.getRetParam(false, "解析失败");
+            return WebDesigner.getRetParam(false, "解析失败").setString("jsonStr", json);
         }
         return param;
     }
