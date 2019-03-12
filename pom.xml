@@ -33,11 +33,11 @@
         </dependency>
 
         <!--下面开始是自己添加的依赖-->
-        <!--模板引擎-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
+        <!--&lt;!&ndash;模板引擎&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+        <!--</dependency>-->
 
         <!--热部署-->
         <dependency>

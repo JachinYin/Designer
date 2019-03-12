@@ -91,5 +91,18 @@ public class Template {
                 ", price=" + price +
                 '}';
     }
+
+//    public String toString(){
+//        Param param = new Param();
+//        param.setInt("id", getId());
+//        param.setInt("aid", getAid());
+//        param.setInt("tempId", getTempId());
+//        param.setString("name", getName());
+//        param.setString("designer", getDesigner());
+//        param.setString("time", getTime());
+//        param.setInt("status", getStatus());
+//        param.setDouble("price", getPrice());
+//        return param.toJson();
+//    }
 }
 

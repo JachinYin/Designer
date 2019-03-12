@@ -1,11 +1,10 @@
 package com.jachin.des.controller;
 
-import com.jachin.des.util.Param;
-import org.springframework.stereotype.Controller;
+import com.jachin.des.util.Response;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -15,40 +14,47 @@ import javax.servlet.http.HttpServletRequest;
  * @author Jachin
  * @since 2019/3/6 14:55
  */
-@Controller
+@RestController
 public class UserController {
 
     @GetMapping("/login")
-    public String login(
+    public Response login(
             @RequestParam(value = "name",required = false)String name,
             @RequestParam(value = "password", required = false) String password,
             Model model
     ){
+        Response response;
         if(getUser().equals(name)) {
             if (getPwd().equals(password)) {
                 model.addAttribute("name", name);
                 HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
                 request.getSession().setAttribute("user", name);
-                return "redirect:home";
+                response = new Response(true, "登陆成功");
+                return response;
             }
         }
-        return "/user/login";
+        response = new Response(false, "登陆失败");
+        return response;
     }
 
-    @ResponseBody
     @GetMapping("/loginValidate")
-    public String loginValidate(
+    public Response loginValidate(
             @RequestParam(value = "name",required = false)String name,
             @RequestParam(value = "password", required = false) String password,
             Model model
     ){
-        if (!getUser().equals(name))
-            return getRetParam(false, "用户名不存在").setInt("type", 1).toJson();
-        if (!getPwd().equals(password))
-            return getRetParam(false, "密码错误").setInt("type", 2).toJson();
-
+        Response response;
+        if (!getUser().equals(name)) {
+            response = new Response(false, "用户不存在");
+            return response;
+        }
+        if (!getPwd().equals(password)) {
+            response = new Response(false, "密码错误");
+            return response;
+        }
         model.addAttribute("name", name);
-        return getRetParam(true, "验证通过").toJson();
+        response = new Response(true, "验证通过");
+        return response;
     }
 
     @GetMapping("/logout")
@@ -66,12 +72,5 @@ public class UserController {
     }
     private String getPwd(){
         return "1234567";
-    }
-
-    private Param getRetParam(boolean success, String msg){
-        Param res = new Param();
-        res.setBoolean("success", success);
-        res.setString("msg", msg);
-        return res;
     }
 }
