@@ -1,18 +1,20 @@
-package com.jachin.des.pojo;
+package com.jachin.des.entity;
 
 /**
  * @author Jachin
  * @since 2019/3/8 15:02
  */
-public class Template {
+public class TemplateAudit {
     private int id;
     private int aid;
     private int tempId;
-    private String name;
+    private String title;
     private String designer;
     private String time;
     private int status;
     private double price;
+    private int type;
+    private String reason;
 
     public int getId() {
         return id;
@@ -38,12 +40,12 @@ public class Template {
         this.tempId = tempId;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDesigner() {
@@ -80,20 +82,38 @@ public class Template {
 
     @Override
     public String toString() {
-        return "Template{" +
+        return "TemplateAudit{" +
                 "id=" + id +
                 ", aid=" + aid +
                 ", tempId=" + tempId +
-                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
                 ", designer='" + designer + '\'' +
                 ", time='" + time + '\'' +
                 ", status=" + status +
                 ", price=" + price +
+                ", type=" + type +
+                ", reason='" + reason + '\'' +
                 '}';
     }
 
-//    public String toString(){
-//        Param param = new Param();
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    //    public String toString(){
+//        JacParam param = new JacParam();
 //        param.setInt("id", getId());
 //        param.setInt("aid", getAid());
 //        param.setInt("tempId", getTempId());

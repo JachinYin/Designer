@@ -10,30 +10,30 @@ import java.util.List;
  * @author Jachin
  * @since 2019/3/6 16:48
  */
-public class Param extends HashMap {
+public class JacParam extends HashMap {
     private HashMap<String, Object> map;
 
-    public Param(){
+    public JacParam(){
         map = new HashMap<>();
     }
 
-    public Param setBoolean(String key, Boolean val){
+    public JacParam setBoolean(String key, Boolean val){
         return this.setObject(key, val);
     }
-    public Param setDouble(String key, Double val){
+    public JacParam setDouble(String key, Double val){
         return this.setObject(key, val);
     }
-    public Param setInt(String key, Integer val){
+    public JacParam setInt(String key, Integer val){
         return this.setObject(key, val);
     }
-    public Param setString(String key, String val){
+    public JacParam setString(String key, String val){
         return this.setObject(key, val);
     }
-    public Param setParam(String key, Param val){
+    public JacParam setParam(String key, JacParam val){
         return this.setObject(key, val);
     }
 
-    public Param setObject(String key, Object value) {
+    public JacParam setObject(String key, Object value) {
         if (key != null && value != null) {
             this.map.put(key, value);
             return this;
@@ -78,12 +78,12 @@ public class Param extends HashMap {
         return value == null ? defaultVal : (String)value;
     }
 
-    public Param getParam(String key){
+    public JacParam getParam(String key){
         Object value = this.getObject(key);
-        return value instanceof Null ? null : (Param)value;
+        return value instanceof Null ? null : (JacParam)value;
     }
-    public Param getParam(String key, Param defaultVal){
-        Param value = this.getParam(key);
+    public JacParam getParam(String key, JacParam defaultVal){
+        JacParam value = this.getParam(key);
         return value == null ? defaultVal: value;
     }
 
@@ -95,7 +95,7 @@ public class Param extends HashMap {
     }
 
     // list
-    public <T> Param setList(String key, List<T> value) {
+    public <T> JacParam setList(String key, List<T> value) {
         return this.setObject(key, value);
     }
 
@@ -151,20 +151,20 @@ public class Param extends HashMap {
     /*
     * 将JSON 解释为Param 对象
     * */
-    public static Param parseParam(String json) {
-        Param param = new Param();
+    public static JacParam parseParam(String json) {
+        JacParam jacParam = new JacParam();
         try {
             json = json.replace("{", "").replace("}", "");
             for (String s1 : json.split(",")) {
                 String[] split = s1.split(":");
                 String key = split[0];
                 String val = split[1];
-                param.setObject(key, val);
+                jacParam.setObject(key, val);
             }
         }catch (Exception e){
             return WebDesigner.getRetParam(false, "解析失败").setString("jsonStr", json);
         }
-        return param;
+        return jacParam;
     }
 
     @Override

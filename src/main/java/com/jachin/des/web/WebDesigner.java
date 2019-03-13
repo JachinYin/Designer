@@ -1,6 +1,6 @@
 package com.jachin.des.web;
 
-import com.jachin.des.util.Param;
+import com.jachin.des.util.JacParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -18,8 +18,8 @@ public class WebDesigner {
         return user != null && !((String) user).isEmpty();
     }
 
-    public static Param getRetParam(boolean success, String msg){
-        Param param = new Param();
-        return param.setBoolean("success", success).setString("msg", msg);
+    public static JacParam getRetParam(boolean success, String msg){
+        JacParam jacParam = new JacParam();
+        return jacParam.setBoolean("success", success).setString("msg", msg);
     }
 }

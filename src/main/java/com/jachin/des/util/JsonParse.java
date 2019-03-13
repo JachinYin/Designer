@@ -36,7 +36,7 @@ class JsonParse {
                     buf.append("\"");
                     return;
                 case 9:
-                    ((Param)obj).dealBuf(buf);
+                    ((JacParam)obj).dealBuf(buf);
             }
         }
     }
@@ -56,7 +56,7 @@ class JsonParse {
             return 6;
         } else if (obj instanceof Calendar) {
             return 7;
-        } else if (obj instanceof Param) {
+        } else if (obj instanceof JacParam) {
             return 9;
         } else if (obj instanceof Byte) {
             return 11;

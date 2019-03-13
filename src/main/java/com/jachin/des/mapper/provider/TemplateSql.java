@@ -1,6 +1,6 @@
 package com.jachin.des.mapper.provider;
 
-import com.jachin.des.pojo.Template;
+import com.jachin.des.entity.TemplateAudit;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
@@ -14,7 +14,8 @@ public class TemplateSql extends SQL {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateSql.class);
 
-    private final String TABLE = "template";
+    private final String TABLE_AUDIT = "templateAudit";
+    private final String TABLE_TEMP = "template";
     class Info{
         public static final String id = "id";
         public static final String aid = "aid";
@@ -35,17 +36,6 @@ public class TemplateSql extends SQL {
         public static final String status = "#{status}";
         public static final String price = "#{price}";
     }
-    class Info_EQ_Param{
-        public static final String id = " id = #{ template.id }";
-        public static final String aid = " aid = #{ template.aid }";
-        public static final String tempId = " tempId = #{ template.tempId }";
-        public static final String name = " name = #{ template.name }";
-        public static final String designer = " designer = #{ template.designer }";
-        public static final String time = " time = #{ template.time }";
-        public static final String status = " status = #{ template.status }";
-        public static final String price = " price = #{ template.price }";
-    }
-
     class Info_EQ{
         public static final String id = " id = #{ id }";
         public static final String aid = " aid = #{ aid }";
@@ -56,26 +46,35 @@ public class TemplateSql extends SQL {
         public static final String status = " status = #{ status }";
         public static final String price = " price = #{ price }";
     }
+    class Info_EQ_Param{
+        public static final String id = " id = #{ templateAudit.id }";
+        public static final String aid = " aid = #{ templateAudit.aid }";
+        public static final String tempId = " tempId = #{ templateAudit.tempId }";
+        public static final String name = " name = #{ templateAudit.name }";
+        public static final String designer = " designer = #{ templateAudit.designer }";
+        public static final String time = " time = #{ templateAudit.time }";
+        public static final String status = " status = #{ templateAudit.status }";
+        public static final String price = " price = #{ templateAudit.price }";
+    }
 
     public String list() {
-        return new SQL()
-                .SELECT("*")
-                .FROM(TABLE)
-                .toString();
-
+        return new SQL(){{
+            SELECT("*");
+            FROM(TABLE_AUDIT);
+        }}.toString();
     }
 
     public String get() {
         return new SQL()
                 .SELECT("*")
-                .FROM(TABLE)
+                .FROM(TABLE_AUDIT)
                 .WHERE(Info_EQ.id)
                 .toString();
     }
 
     public String add(){
         return new SQL()
-                .INSERT_INTO(TABLE)
+                .INSERT_INTO(TABLE_AUDIT)
                 .VALUES(Info.aid, Info_Key.aid)
                 .VALUES(Info.tempId, Info_Key.tempId)
                 .VALUES(Info.name, Info_Key.name)
@@ -86,28 +85,30 @@ public class TemplateSql extends SQL {
                 .toString();
     }
 
-    public String update(@Param("template")Template template) throws Exception {
-        if(template.getAid() == 0){
+    /**
+     模板审核记录更新
+     对于没有的字段，则不个更新
+     必须要传入 aid 和 templateId,否则报错
+    */
+    public String update(@Param("templateAudit") TemplateAudit templateAudit) throws Exception {
+        if(templateAudit.getAid() == 0){
             log.error("{rt=-2}; arg error; aid=0");
             throw new Exception();
         }
-        if(template.getTempId() == 0){
+        if(templateAudit.getTempId() == 0){
             log.error("{rt=-2}; arg error; tempId=0");
             throw new Exception();
         }
-        log.info(template.toString() + template.getName());
         return new SQL(){
             {
-                UPDATE(TABLE);
-                if(template.getDesigner() != null && !template.getDesigner().isEmpty())
+                UPDATE(TABLE_AUDIT);
+                if(templateAudit.getDesigner() != null && !templateAudit.getDesigner().isEmpty())
                     SET(Info_EQ_Param.designer);
-                if(template.getName() != null && !template.getName().isEmpty())
-                    SET(Info_EQ_Param.name);
-                if(template.getTime() != null && !template.getTime().isEmpty())
+                if(templateAudit.getTime() != null && !templateAudit.getTime().isEmpty())
                     SET(Info_EQ_Param.time);
-                if(template.getStatus() != 0)
+                if(templateAudit.getStatus() != 0)
                     SET(Info_EQ_Param.status);
-                if(template.getPrice() != 0)
+                if(templateAudit.getPrice() != 0)
                     SET(Info_EQ_Param.price);
                 WHERE(Info_EQ_Param.aid);
                 WHERE(Info_EQ_Param.tempId);
@@ -117,9 +118,31 @@ public class TemplateSql extends SQL {
 
     public String delete(){
         return new SQL()
-                .DELETE_FROM(TABLE)
+                .DELETE_FROM(TABLE_AUDIT)
                 .WHERE(Info_EQ.id)
                 .toString();
     }
 
+
+    /*获取模板审核展示数据（分页）*/
+    public String getShowList(){
+        return new SQL(){{
+            SELECT("t1.title 'name'");
+            SELECT("t2.*");
+            FROM(TABLE_TEMP + " t1");
+            FROM(TABLE_AUDIT + " t2");
+            INNER_JOIN(TABLE_TEMP);
+            INNER_JOIN(TABLE_AUDIT + " on template.tempId = templateAudit.tempId");
+            ORDER_BY(Info_Key.time);
+        }}.toString();
+    }
+
+
+    /*筛选模板审核展示数据（分页）*/
+    /*导出筛选的模板数据（前端分页的话就不需要了）*/
+    /*修改模板审核记录*/
+    /*获取模板统计数据*/
+    /*获取模板统计数据*/
+    /*查看单个模板具体信息*/
+    /*获取单个模板审核记录*/
 }
