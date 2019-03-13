@@ -185,4 +185,30 @@ public class Designer {
     public void setReverseImg(String reverseImg) {
         this.reverseImg = reverseImg;
     }
+
+    @Override
+    public String toString() {
+        return "Designer{" +
+                "aid=" + aid +
+                ", status=" + status +
+                ", intro='" + intro + '\'' +
+                ", idNum='" + idNum + '\'' +
+                ", realName='" + realName + '\'' +
+                ", country='" + country + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", weChat='" + weChat + '\'' +
+                ", qq='" + qq + '\'' +
+                ", address='" + address + '\'' +
+                ", bankAcct='" + bankAcct + '\'' +
+                ", openBank='" + openBank + '\'' +
+                ", cardHolder='" + cardHolder + '\'' +
+                ", isDel='" + isDel + '\'' +
+                ", photoImg='" + photoImg + '\'' +
+                ", frontImg='" + frontImg + '\'' +
+                ", reverseImg='" + reverseImg + '\'' +
+                '}';
+    }
 }
