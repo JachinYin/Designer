@@ -1,7 +1,9 @@
 package com.jachin.des.controller.system;
 
+import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.Template;
 import com.jachin.des.entity.TemplateAudit;
+import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.mapper.TemplateMapper;
 import com.jachin.des.util.ResParam;
@@ -28,6 +30,8 @@ public class TemplateController {
     TemplateAuditMapper templateAuditMapper;
     @Autowired
     TemplateMapper templateMapper;
+    @Autowired
+    DesignerMapper designerMapper;
 
 
 
@@ -49,6 +53,8 @@ public class TemplateController {
         List<TemplateAudit> tempAuditList = templateAuditMapper.getTempAuditById(tempId);
         TemplateAudit lastTempAudit = tempAuditList.get(0);
 
+        Designer designer = designerMapper.getDesignerById(lastTempAudit.getAid());
+
         ResParam resParam = new ResParam();
         resParam.put("tempId", template.getTempId());
         resParam.put("aid", lastTempAudit.getAid());
@@ -59,7 +65,7 @@ public class TemplateController {
         resParam.put("content", template.getContent());
         resParam.put("keyWd", template.getKeyWd());
         resParam.put("imgUrl", template.getImgUrl());
-        resParam.put("title ", template.getTitle());
+        resParam.put("title", template.getTitle());
         resParam.put("tempAuditList", tempAuditList);
         resParam.put("list", tempAuditList);
 
