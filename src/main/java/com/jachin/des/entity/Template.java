@@ -4,7 +4,7 @@ package com.jachin.des.entity;
  * @author Jachin
  * @since 2019/3/13 13:10
  */
-public class Template {
+public class Template implements AEntity{
     private int tempId;
     private String title;
     private String keyWd;

@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Response {
     private boolean success;
     private String msg;
-    private HashMap<String, Object> other;
+    private HashMap<String, Object> data;
 
     public Response() {
     }
@@ -17,7 +17,7 @@ public class Response {
     public Response(boolean success, String msg) {
         this.success = success;
         this.msg = msg;
-        this.other = new HashMap<>();
+        this.data = new HashMap<>();
     }
 
     public boolean isSuccess() {
@@ -36,11 +36,11 @@ public class Response {
         this.msg = msg;
     }
 
-    public HashMap<String, Object> getOther() {
-        return other;
+    public HashMap<String, Object> getData() {
+        return data;
     }
 
-    public void setOther(HashMap<String, Object> other) {
-        this.other = other;
+    public void setData(HashMap<String, Object> data) {
+        this.data = data;
     }
 }

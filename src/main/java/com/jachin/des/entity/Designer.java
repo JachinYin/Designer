@@ -4,27 +4,28 @@ package com.jachin.des.entity;
  * @author Jachin
  * @since 2019/3/13 22:33
  */
-public class Designer {
-    private int aid;
-    private int status;
-    private String intro;
-    private String idNum;
-    private String realName;
-    private String country;
-    private String province;
-    private String city;
-    private String phone;
-    private String email;
-    private String weChat;
-    private String qq;
-    private String address;
-    private String bankAcct;
-    private String openBank;
-    private String cardHolder;
-    private String isDel;
-    private String photoImg;
-    private String frontImg;
-    private String reverseImg;
+public class Designer implements AEntity{
+    private int aid;            // 账户ID
+    private int status;         // 状态
+    private int balance;        // 余额
+    private int totalPrice;     // 总收入
+    private String intro;       // 简介
+    private String idNum;       // 身份证号码
+    private String realName;    // 真实姓名
+    private String country;     // 国家
+    private String province;    // 省份
+    private String city;        // 城市
+    private String phone;       // 联系手机
+    private String email;       // 邮箱
+    private String weChat;      // 微信号
+    private String qq;          // QQ号
+    private String address;     // 地址
+    private String bankAcct;    // 银行账号
+    private String openBank;    // 开户银行
+    private String cardHolder;  // 持卡人
+    private String photoImg;    // 头像
+    private String frontImg;    // 身份证正面照
+    private String reverseImg;  // 身份证反面照
 
     public int getAid() {
         return aid;
@@ -40,6 +41,22 @@ public class Designer {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getIntro() {
@@ -154,14 +171,6 @@ public class Designer {
         this.cardHolder = cardHolder;
     }
 
-    public String getIsDel() {
-        return isDel;
-    }
-
-    public void setIsDel(String isDel) {
-        this.isDel = isDel;
-    }
-
     public String getPhotoImg() {
         return photoImg;
     }
@@ -205,7 +214,6 @@ public class Designer {
                 ", bankAcct='" + bankAcct + '\'' +
                 ", openBank='" + openBank + '\'' +
                 ", cardHolder='" + cardHolder + '\'' +
-                ", isDel='" + isDel + '\'' +
                 ", photoImg='" + photoImg + '\'' +
                 ", frontImg='" + frontImg + '\'' +
                 ", reverseImg='" + reverseImg + '\'' +

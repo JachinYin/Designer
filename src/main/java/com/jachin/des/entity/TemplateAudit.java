@@ -4,7 +4,7 @@ package com.jachin.des.entity;
  * @author Jachin
  * @since 2019/3/8 15:02
  */
-public class TemplateAudit {
+public class TemplateAudit implements AEntity{
     private int id;
     private int aid;
     private int tempId;
@@ -12,7 +12,7 @@ public class TemplateAudit {
     private String designer;
     private String time;
     private int status;
-    private double price;
+    private int price;
     private int type;
     private String reason;
 
@@ -72,11 +72,11 @@ public class TemplateAudit {
         this.status = status;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
