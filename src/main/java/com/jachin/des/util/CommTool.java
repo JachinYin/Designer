@@ -49,4 +49,10 @@ public class CommTool {
             resParam.put(item.getName(), getMethod.invoke(template));
         }
     }
+
+    public static boolean isBlank(String str) {
+        return !(str != null && !str.isEmpty());
+    }
+
+
 }

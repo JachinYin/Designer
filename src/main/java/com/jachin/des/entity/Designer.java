@@ -5,14 +5,16 @@ package com.jachin.des.entity;
  * @since 2019/3/13 22:33
  */
 public class Designer implements AEntity{
+    // 22项
     private int aid;            // 账户ID
     private int status;         // 状态
     private int balance;        // 余额
     private int totalPrice;     // 总收入
+    private String nickName;    // 昵称
     private String intro;       // 简介
     private String idNum;       // 身份证号码
     private String realName;    // 真实姓名
-    private String country;     // 国家
+    private String country;     // 国家1
     private String province;    // 省份
     private String city;        // 城市
     private String phone;       // 联系手机
@@ -57,6 +59,14 @@ public class Designer implements AEntity{
 
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getIntro() {

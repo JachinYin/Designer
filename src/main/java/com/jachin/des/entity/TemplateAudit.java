@@ -16,6 +16,9 @@ public class TemplateAudit implements AEntity{
     private int type;
     private String reason;
 
+    public TemplateAudit() {
+    }
+
     public int getId() {
         return id;
     }

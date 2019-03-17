@@ -1,5 +1,6 @@
 package com.jachin.des.mapper.provider;
 
+import com.jachin.des.entity.TemplateAudit;
 import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,34 @@ public class TemplateAuditSql extends SQL {
                 .VALUES(Info.reason, Info_Key.reason)
                 .toString();
     }
+
+    public String getShowList(TemplateAudit templateAudit){
+
+        StringBuilder sb = new StringBuilder();
+               // "ORDER BY time desc;";
+        sb.append("select * from `templateAudit` as x where time in ");
+        sb.append("(select max(time) from `templateAudit` as y ");
+        sb.append("where x.tempId = y.tempId) ");
+
+        // 拼接多条件
+//        int aid = templateAudit.getAid();
+        int tempId = templateAudit.getTempId();
+        String designer = templateAudit.getDesigner();
+        String title = templateAudit.getTitle();
+        String time = templateAudit.getTime();
+        int status = templateAudit.getStatus();
+
+        if(tempId > 0) sb.append(" and tempId = " + tempId);
+        if(designer != null && !designer.isEmpty()) sb.append(" and designer like '%" + designer + "%'");
+        if(title  != null && !title.isEmpty()) sb.append(" and title like '%" + title + "%'");
+        if(time != null && !time.isEmpty()) sb.append(" and time > '" + time + "' ");
+        if(status > 0) sb.append(" and status = " + status);
+
+
+        sb.append(" ORDER BY time desc;");
+        return sb.toString();
+    }
+
 
     /*获取模板审核展示数据（分页）*/
     /*筛选模板审核展示数据（分页）*/
