@@ -150,4 +150,17 @@ public class TemplateService {
         response.setData(resParam);
         return response;
     }
+
+    // 设计师前台，获取模板列表
+    public Response getTempList(int aid) {
+        if(aid < 1){
+            return new Response(false, "获取模板列表失败，aid错误");
+        }
+        Response response = new Response(true, "获取列表成功");
+        List<Template> templateList = templateMapper.getTemplateList(aid);
+        ResParam resParam = new ResParam();
+        resParam.put("list",templateList);
+        response.setData(resParam);
+        return response;
+    }
 }

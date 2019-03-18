@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2019/3/8 15:06
  */
 @RestController
-public class TemplateController {
-    private static final Logger log = LoggerFactory.getLogger(TemplateController.class);
+public class TemplateAuditController {
+    private static final Logger log = LoggerFactory.getLogger(TemplateAuditController.class);
 
     @Autowired
     TemplateService  templateService;
 
 
 
-    @GetMapping("/getTemplateList")
+    @GetMapping("/getTemplateAuditList")
     public Response getTemplateListBySearch(TemplateAudit templateAudit){
         return templateService.getTempList(templateAudit);
     }
