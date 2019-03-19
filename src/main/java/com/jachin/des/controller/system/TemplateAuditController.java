@@ -34,7 +34,7 @@ public class TemplateAuditController {
      * @param templateAudit 模板对象，会自动映射相同的字段到对象中
      * @return ResParam
      */
-    @GetMapping("/getTempById")
+    @GetMapping("/getTempAuditById")
     public Response getTempById(TemplateAudit templateAudit){
         return templateService.getTempById(templateAudit.getTempId());
     }

@@ -48,8 +48,8 @@ public class UserController {
         int i = new Random().nextInt(1000);
         Cookie t_cookie = new Cookie("TOKEN", "FAISCO" +i);
         Cookie n_cookie = new Cookie("name", name);
-        t_cookie.setMaxAge(5 * 60);
-        n_cookie.setMaxAge(5 * 60);
+        t_cookie.setMaxAge(15 * 60);
+        n_cookie.setMaxAge(15 * 60);
 //        t_cookie.setSecure(true);
         httpResponse.addCookie(t_cookie);
         httpResponse.addCookie(n_cookie);

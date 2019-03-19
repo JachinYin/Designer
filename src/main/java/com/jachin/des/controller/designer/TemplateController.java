@@ -20,4 +20,10 @@ public class TemplateController {
     public Response getTemplateList(int aid){
         return templateService.getTempList(aid);
     }
+
+    @GetMapping("/getTempById")
+    public Response gerTemplateById(int tempId){
+        return templateService.getTempById_Des(tempId);
+    }
 }
+

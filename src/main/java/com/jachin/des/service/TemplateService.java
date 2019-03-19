@@ -151,7 +151,9 @@ public class TemplateService {
         return response;
     }
 
-    // 设计师前台，获取模板列表
+    // ======设计师前台====
+    //
+    // 获取模板列表
     public Response getTempList(int aid) {
         if(aid < 1){
             return new Response(false, "获取模板列表失败，aid错误");
@@ -160,6 +162,17 @@ public class TemplateService {
         List<Template> templateList = templateMapper.getTemplateList(aid);
         ResParam resParam = new ResParam();
         resParam.put("list",templateList);
+        response.setData(resParam);
+        return response;
+    }
+
+    // 获取指定模板 ID 的模板数据
+    public Response getTempById_Des(int tempId){
+        if(tempId == 0) return new Response(false, "模板Id错误！");
+        Response response = new Response(true, "获取模板数据");
+        Template template = templateMapper.findById(tempId);
+        ResParam resParam = new ResParam();
+        resParam.put("tempData", template);
         response.setData(resParam);
         return response;
     }
