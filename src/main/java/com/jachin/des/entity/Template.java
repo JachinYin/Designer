@@ -5,12 +5,12 @@ package com.jachin.des.entity;
  * @since 2019/3/13 13:10
  */
 public class Template implements AEntity{
-    private int tempId;
-    private String title;
-    private String keyWd;
-    private String info;
-    private String imgUrl;
-    private String content;
+    private int tempId;     // 模板id
+    private String title;   // 标题
+    private String keyWd;   // 关键词
+    private String info;    // 行业信息
+    private String imgUrl;  // 封面URL
+    private String content; // 内容
 
     public int getTempId() {
         return tempId;
