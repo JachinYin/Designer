@@ -1,6 +1,7 @@
 package com.jachin.des.entity;
 
 /**
+ * 设计师表
  * @author Jachin
  * @since 2019/3/13 22:33
  */

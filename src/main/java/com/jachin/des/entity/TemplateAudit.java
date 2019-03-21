@@ -1,20 +1,20 @@
 package com.jachin.des.entity;
 
 /**
+ * 模板审核表对象
  * @author Jachin
  * @since 2019/3/8 15:02
  */
 public class TemplateAudit implements AEntity{
-    private int id;
-    private int aid;
-    private int tempId;
-    private String title;
-    private String designer;
-    private String time;
-    private int status;
-    private int price;
-    private int type;
-    private String reason;
+    private int id;             // 主键自增
+    private int aid;            // 账户ID
+    private int tempId;         // 模板ID
+    private String title;       // 模板标题
+    private String designer;    // 设计师昵称
+    private String time;        // 审核时间
+    private int status;         // 审核状态
+    private int price;          // 价格
+    private String reason;      // 打回理由
 
     public TemplateAudit() {
     }
@@ -94,17 +94,8 @@ public class TemplateAudit implements AEntity{
                 ", time='" + time + '\'' +
                 ", status=" + status +
                 ", price=" + price +
-                ", type=" + type +
                 ", reason='" + reason + '\'' +
                 '}';
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
     }
 
     public String getReason() {
@@ -114,18 +105,5 @@ public class TemplateAudit implements AEntity{
     public void setReason(String reason) {
         this.reason = reason;
     }
-
-    //    public String toString(){
-//        JacParam param = new JacParam();
-//        param.setInt("id", getId());
-//        param.setInt("aid", getAid());
-//        param.setInt("tempId", getTempId());
-//        param.setString("name", getName());
-//        param.setString("designer", getDesigner());
-//        param.setString("time", getTime());
-//        param.setInt("status", getStatus());
-//        param.setDouble("price", getPrice());
-//        return param.toJson();
-//    }
 }
 

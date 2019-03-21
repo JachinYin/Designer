@@ -1,6 +1,7 @@
 package com.jachin.des.entity;
 
 /**
+ * 过滤通配对象
  * @author Jachin
  * @since 2019/3/16 15:27
  */
