@@ -30,7 +30,8 @@ public class WebDesigner {
             }
         log.error("登陆信息="+name + token);
         // TODO 正确的验证信息
-        return !name.isEmpty() && !token.isEmpty();
+//        return !name.isEmpty() && !token.isEmpty();
+        return true;
     }
 
     public static JacParam getRetParam(boolean success, String msg){
