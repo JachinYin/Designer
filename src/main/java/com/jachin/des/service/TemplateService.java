@@ -3,7 +3,7 @@ package com.jachin.des.service;
 import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.Template;
 import com.jachin.des.entity.TemplateAudit;
-import com.jachin.des.entity.def.TemplateDef;
+import com.jachin.des.entity.DataDef;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.mapper.TemplateMapper;
@@ -94,7 +94,7 @@ public class TemplateService {
 
         TemplateAudit lastTempAudit = templateAuditMapper.getTempAuditById(tempId).get(0);
         lastTempAudit.setPrice(price);
-        lastTempAudit.setStatus(TemplateDef.Status.PASS);
+        lastTempAudit.setStatus(DataDef.TemplateStatus.PASS);
         lastTempAudit.setTime(now);
         templateAuditMapper.addTemplate(lastTempAudit);
 
@@ -129,7 +129,7 @@ public class TemplateService {
         int price = lastTempAudit.getPrice();
         price = price > 0 ? -price : 0;
         lastTempAudit.setPrice(price);
-        lastTempAudit.setStatus(TemplateDef.Status.BACK);
+        lastTempAudit.setStatus(DataDef.TemplateStatus.BACK);
         lastTempAudit.setTime(now);
         templateAuditMapper.addTemplate(lastTempAudit);
 

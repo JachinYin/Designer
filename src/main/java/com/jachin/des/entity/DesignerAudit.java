@@ -1,19 +1,19 @@
 package com.jachin.des.entity;
 
 /**
+ * 设计师审核表
  * @author Jachin
  * @since 2019/3/8 15:02
  */
 public class DesignerAudit implements AEntity{
-    private int id;
-    private int aid;
-    private String nickName;
-    private String time;
-    private int status;
-    private String reason;
+    private int id;             // 主键自增
+    private int aid;            // 账户ID
+    private String nickName;    // 设计师昵称
+    private String time;        // 审核时间
+    private int status;         // 审核状态
+    private String reason;      // 打回理由
 
-    public DesignerAudit() {
-    }
+    public DesignerAudit() {}
 
     public int getId() {
         return id;

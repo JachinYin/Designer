@@ -11,9 +11,9 @@ import java.util.List;
 @Mapper
 public interface TemplateMapper {
 
-    @Select("select * from template where tempId=${tempId};")
+    @Select("SELECT * FROM template WHERE tempId=${tempId};")
     public Template findById(@Param("tempId")int id);
 
-    @Select("select * from template")
-    public List<Template> getTemplateList(int aid);
+    @Select("SELECT * FROM `template` WHERE aid=#{aid};")
+    public List<Template> getTemplateList(@Param("aid") int aid);
 }

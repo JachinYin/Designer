@@ -15,58 +15,23 @@ public class TemplateAuditSql extends SQL {
 
     private final String TABLE_AUDIT = "templateAudit";
     private final String TABLE_TEMP = "template";
-    class Info{
-        public static final String id = "id";
-        public static final String aid = "aid";
-        public static final String tempId = "tempId";
-        public static final String title = "title";
-        public static final String designer = "designer";
-        public static final String time = "time";
-        public static final String status = "status";
-        public static final String price = "price";
-        public static final String type = "type";
-        public static final String reason = "reason";
-    }
-    class Info_Key{
-        public static final String id = "#{id}";
-        public static final String aid = "#{aid}";
-        public static final String tempId = "#{tempId}";
-        public static final String title = "#{title}";
-        public static final String designer = "#{designer}";
-        public static final String time = "#{time}";
-        public static final String status = "#{status}";
-        public static final String price = "#{price}";
-        public static final String type = "#{type}";
-        public static final String reason = "#{reason}";
-    }
-    class Info_EQ{
-        public static final String id = " id = #{ id }";
-        public static final String aid = " aid = #{ aid }";
-        public static final String tempId = " tempId = #{ tempId }";
-        public static final String title = " title = #{ title }";
-        public static final String designer = " designer = #{ designer }";
-        public static final String time = " time = #{ time }";
-        public static final String status = " status = #{ status }";
-        public static final String price = " price = #{ price }";
-        public static final String type = "type = #{type}";
-        public static final String reason = "reason = #{reason}";
-    }
-    
-    public String addTempAudit(){
-        return new SQL()
-                .INSERT_INTO(TABLE_AUDIT)
-                .VALUES(Info.aid, Info_Key.aid)
-                .VALUES(Info.tempId, Info_Key.tempId)
-                .VALUES(Info.title, Info_Key.title)
-                .VALUES(Info.designer, Info_Key.designer)
-                .VALUES(Info.time, Info_Key.time)
-                .VALUES(Info.status, Info_Key.status)
-                .VALUES(Info.price, Info_Key.price)
-                .VALUES(Info.type, Info_Key.type)
-                .VALUES(Info.reason, Info_Key.reason)
-                .toString();
+
+    // 设计师前台提交审核记录的SQL
+    public String addTempAudit(TemplateAudit templateAudit){
+        int aid = templateAudit.getAid();
+        int tempId = templateAudit.getTempId();
+        String title = templateAudit.getTitle();
+        String designer = templateAudit.getDesigner();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO ").append(TABLE_AUDIT);
+        sb.append(" (aid, tempId, title, designer)"); // 列名
+        sb.append(String.format(" VALUES (%d, %d, %s, %s);"
+                , aid, tempId, title, designer));
+        return sb.toString();
     }
 
+    // 返回模板审核表展示数据的SQL
     public String getShowList(TemplateAudit templateAudit){
 
         StringBuilder sb = new StringBuilder();
