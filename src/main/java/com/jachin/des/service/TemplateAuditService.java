@@ -1,12 +1,10 @@
 package com.jachin.des.service;
 
-import com.jachin.des.entity.Designer;
-import com.jachin.des.entity.Template;
-import com.jachin.des.entity.TemplateAudit;
-import com.jachin.des.entity.DataDef;
+import com.jachin.des.entity.*;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.mapper.TemplateMapper;
+import com.jachin.des.mapper.provider.TemplateAuditSql;
 import com.jachin.des.util.CommTool;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
@@ -24,8 +22,8 @@ import java.util.List;
  * @since 2019/3/15 20:03
  */
 @Service
-public class TemplateService {
-    private static final Logger log = LoggerFactory.getLogger(TemplateService.class);
+public class TemplateAuditService {
+    private static final Logger log = LoggerFactory.getLogger(TemplateAuditService.class);
 
     @Autowired
     TemplateAuditMapper templateAuditMapper;
@@ -43,7 +41,9 @@ public class TemplateService {
         if(tempId == 0){
             return new Response(false, "模板Id错误");
         }
-        Template template = templateMapper.findById(tempId);
+        SearchArg searchArg = new SearchArg();
+        searchArg.setTempId(tempId);
+        Template template = templateMapper.getTemplate(searchArg);
         // 获取该模板的所有审核记录
         List<TemplateAudit> tempAuditList = templateAuditMapper.getTempAuditById(tempId);
         // 获取最新的一条记录
@@ -137,43 +137,63 @@ public class TemplateService {
         return response;
     }
 
-    public Response getTempList(TemplateAudit form) {
-        if(form == null){
-            form = new TemplateAudit();
-        }
+    // =====基础查改增删=====
 
-        Response response = new Response(true, "获取模板审核记录");
-        List<TemplateAudit> res = templateAuditMapper.getShowTempListForProvider(form);
-        ResParam resParam = new ResParam();
-        resParam.put("list", res);
-        resParam.put("form", form);
-        response.setData(resParam);
+    /**
+     * 根据模板Id获取模板信息
+     */
+    public Response getTemplateAudit(int tempId){
+        Response response = new Response(true, "获取成功");
+
         return response;
     }
 
-    // ======设计师前台====
-    //
-    // 获取模板列表
-    public Response getTempList(int aid) {
-        if(aid < 1){
-            return new Response(false, "获取模板列表失败，aid错误");
-        }
-        Response response = new Response(true, "获取列表成功");
-        List<Template> templateList = templateMapper.getTemplateList(aid);
+    /**
+     * 根据条件获取模板列表
+     */
+    public Response getTemplateAuditList(SearchArg searchArg){
+        Response response = new Response(true, "获取成功");
+
+        searchArg.setCompColumns("time", true);
+
+        List<TemplateAudit> list = templateAuditMapper.getTemplateAuditList(searchArg);
+
+        TemplateAuditSql sql = new TemplateAuditSql();
+
+
         ResParam resParam = new ResParam();
-        resParam.put("list",templateList);
+        resParam.put("list", list);
+        resParam.put("sql", sql.getTemplateAuditList(searchArg));
         response.setData(resParam);
+
         return response;
     }
 
-    // 获取指定模板 ID 的模板数据
-    public Response getTempById_Des(int tempId){
-        if(tempId == 0) return new Response(false, "模板Id错误！");
-        Response response = new Response(true, "获取模板数据");
-        Template template = templateMapper.findById(tempId);
-        ResParam resParam = new ResParam();
-        resParam.put("tempData", template);
-        response.setData(resParam);
+    /**
+     * 根据模板Id更新模板信息
+     */
+    public Response updateTemplateAudit(int tempId){
+        Response response = new Response(true, "更新成功");
+
         return response;
     }
+
+    /**
+     * 添加模板审核记录
+     */
+    public Response addTemplateAudit(TemplateAudit template){
+        Response response = new Response(true, "插入成功");
+
+        return response;
+    }
+
+    /**
+     * 根据模板Id删除模板
+     */
+    public Response deleteTemplateAudit(int tempId){
+        Response response = new Response(true, "删除成功");
+
+        return response;
+    }
+
 }

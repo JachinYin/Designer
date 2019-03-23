@@ -1,7 +1,9 @@
-package com.jachin.des.controller.system;
+package com.jachin.des.controller;
 
+import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.TemplateAudit;
-import com.jachin.des.service.TemplateService;
+import com.jachin.des.mapper.TemplateAuditMapper;
+import com.jachin.des.service.TemplateAuditService;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.slf4j.Logger;
@@ -19,13 +21,11 @@ public class TemplateAuditController {
     private static final Logger log = LoggerFactory.getLogger(TemplateAuditController.class);
 
     @Autowired
-    TemplateService  templateService;
-
-
+    TemplateAuditService templateAuditService;
 
     @GetMapping("/getTemplateAuditList")
-    public Response getTemplateListBySearch(TemplateAudit templateAudit){
-        return templateService.getTempList(templateAudit);
+    public Response getTemplateListBySearch(SearchArg searchArg){
+        return templateAuditService.getTemplateAuditList(searchArg);
     }
 
     /**
@@ -36,36 +36,26 @@ public class TemplateAuditController {
      */
     @GetMapping("/getTempAuditById")
     public Response getTempById(TemplateAudit templateAudit){
-        return templateService.getTempById(templateAudit.getTempId());
+        return templateAuditService.getTempById(templateAudit.getTempId());
     }
 
     // 模板通过
     @GetMapping("/tempPass")
     public Response tempPass(TemplateAudit templateAudit){
-        return templateService.tempPass(templateAudit.getTempId(), templateAudit.getPrice());
+        return templateAuditService.tempPass(templateAudit.getTempId(), templateAudit.getPrice());
     }
 
     // 模板打回
     @GetMapping("/tempRefuse")
     public Response tempRefuse(TemplateAudit templateAudit){
-        return templateService.tempRefuse(templateAudit.getTempId(), templateAudit.getReason());
+        return templateAuditService.tempRefuse(templateAudit.getTempId(), templateAudit.getReason());
     }
 
 
+    // ================设计师前台
+
     @GetMapping("/addTemplate")
-    //@RequestParam("template")String template
     public Response addTemplate(TemplateAudit templateAudit){
-        Response response;
-        try {
-//            templateAuditMapper.addTemplate(templateAudit1);
-        }catch (Exception e){
-            response = new Response(false, "新增失败");
-            return response;
-        }
-        ResParam resParam = new ResParam();
-        resParam.put("tempAudit",templateAudit);
-        response = new Response(true, "插入成功");
-        response.setData(resParam);
-        return response;
+        return templateAuditService.addTemplateAudit(templateAudit);
     }
 }

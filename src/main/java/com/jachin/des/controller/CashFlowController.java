@@ -1,4 +1,4 @@
-package com.jachin.des.controller.system;
+package com.jachin.des.controller;
 
 import com.jachin.des.service.CashFlowService;
 import com.jachin.des.util.Response;
