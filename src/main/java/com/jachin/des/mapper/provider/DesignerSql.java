@@ -27,9 +27,9 @@ public class DesignerSql extends SQL {
         String time = designerAudit.getTime();
 
         if(aid > 0) sb.append(" and aid = " + aid);
-        if(!CommTool.isBlank(nickName)) sb.append(" and nickName like '%" + nickName + "%'");
+        if(CommTool.isNotBlank(nickName)) sb.append(" and nickName like '%" + nickName + "%'");
         if(status > 0) sb.append(" and status = " + status);
-        if(!CommTool.isBlank(time)) sb.append(" and time > '" + time + "'");
+        if(CommTool.isNotBlank(time)) sb.append(" and time > '" + time + "'");
 
 
         sb.append(" ORDER BY time desc;");
