@@ -1,9 +1,9 @@
 package com.jachin.des.mapper;
 
+import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.Template;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import com.jachin.des.mapper.provider.TemplateSql;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -11,9 +11,20 @@ import java.util.List;
 @Mapper
 public interface TemplateMapper {
 
-    @Select("SELECT * FROM template WHERE tempId=${tempId};")
-    public Template findById(@Param("tempId")int id);
 
-    @Select("SELECT * FROM `template` WHERE aid=#{aid};")
-    public List<Template> getTemplateList(@Param("aid") int aid);
+    // =====基础查改增删=====
+    @SelectProvider(type = TemplateSql.class, method = "getTemplate")
+    public Template getTemplate(SearchArg searchArg);
+
+    @SelectProvider(type = TemplateSql.class, method = "getTemplateList")
+    public List<Template> getTemplateList(SearchArg searchArg);
+
+    @UpdateProvider(type = TemplateSql.class, method = "setTemplate")
+    public int setTemplate(Template template);
+
+    @InsertProvider(type = TemplateSql.class, method = "addTemplate")
+    public int addTemplate(Template template);
+
+    @DeleteProvider(type = TemplateSql.class, method = "delTemplate")
+    public int delTemplate(int tempId);
 }
