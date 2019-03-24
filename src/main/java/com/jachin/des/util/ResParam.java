@@ -8,4 +8,10 @@ import java.util.HashMap;
  */
 public class ResParam extends HashMap<String, Object> {
 
+    public ResParam(){}
+
+    public ResParam(String key, Object val){
+        super();
+        put(key, val);
+    }
 }

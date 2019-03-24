@@ -17,6 +17,8 @@ import java.util.Locale;
  * @since 2019/3/12 17:00
  */
 public class CommTool {
+
+    public static final String imgUrl = "E:/Code/Graduation/Designer/Img";
 //    public static
     public static Logger getLogger(){
         return LoggerFactory.getLogger(Class.class);
@@ -39,19 +41,24 @@ public class CommTool {
         return df2.format(date1);
     }
 
-    public static void mergeResParam(ResParam resParam, AEntity template) throws Exception {
-        Class<?> classResParam = template.getClass();
-        Field[] declaredFields = classResParam.getDeclaredFields();
-        for(Field item : declaredFields){
-            String name = item.getName();
-            name = "get" + name.substring(0,1).toUpperCase() + name.substring(1);
-            Method getMethod = classResParam.getMethod(name);
-            resParam.put(item.getName(), getMethod.invoke(template));
+    public static int mergeResParam(ResParam resParam, AEntity template){
+        try {
+            Class<?> classResParam = template.getClass();
+            Field[] declaredFields = classResParam.getDeclaredFields();
+            for(Field item : declaredFields){
+                String name = item.getName();
+                name = "get" + name.substring(0,1).toUpperCase() + name.substring(1);
+                Method getMethod = classResParam.getMethod(name);
+                resParam.put(item.getName(), getMethod.invoke(template));
+            }
+        } catch (Exception e) {
+            return -1;
         }
+        return 0;
     }
 
-    public static boolean isBlank(String str) {
-        return !(str != null && !str.isEmpty());
+    public static boolean isNotBlank(String str) {
+        return str != null && !str.isEmpty();
     }
 
 
