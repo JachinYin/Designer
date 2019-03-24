@@ -32,43 +32,37 @@ public class TemplateAuditService {
     @Autowired
     DesignerMapper designerMapper;
 
+    private TemplateAuditSql sql = new TemplateAuditSql();
+
     /**
      * 【模板审核】- 查看详情
-     * @param tempId 模板Id
+     * @param searchArg 通用参数类
      * @return 返回类
      */
-    public Response getTempById(int tempId){
+    public Response getAuditShowData(SearchArg searchArg){
+        int tempId = searchArg.getTempId();
         if(tempId == 0){
             return new Response(false, "模板Id错误");
         }
-        SearchArg searchArg = new SearchArg();
-        searchArg.setTempId(tempId);
         Template template = templateMapper.getTemplate(searchArg);
-        // 获取该模板的所有审核记录
+        // 获取该模板的所有审核记录 & 最新的一条记录
         List<TemplateAudit> tempAuditList = templateAuditMapper.getTempAuditById(tempId);
-        // 获取最新的一条记录
         TemplateAudit lastTempAudit = tempAuditList.get(0);
         // 获取设计师信息
         Designer designer = designerMapper.getDesignerById(lastTempAudit.getAid());
         // 构造返回数据类
+        Response response = new Response(true, "获取模板详情信息");
+
         ResParam resParam = new ResParam();
-        Response response = new Response();
         // 拼接数据
-        try {
-            CommTool.mergeResParam(resParam, template);
-        } catch (Exception e) {
-            response.setSuccess(false);
-            response.setMsg("合并Param出错");
-        }
-        resParam.put("aid", lastTempAudit.getAid());
-        resParam.put("status", lastTempAudit.getStatus());
-        resParam.put("price", lastTempAudit.getPrice());
-        resParam.put("designer", lastTempAudit.getDesigner());
+        int rt = CommTool.mergeResParam(resParam, template);
+        int rt2 = CommTool.mergeResParam(resParam, lastTempAudit);
+
+        if(rt != 0 || rt2 != 0) response.setMsg("合并Param出错");
+
         resParam.put("phone", designer.getPhone());
         resParam.put("realName", designer.getRealName());
         resParam.put("list", tempAuditList);
-
-        response = new Response(true, "获取模板详情信息");
         response.setData(resParam);
         return response;
     }
@@ -142,9 +136,10 @@ public class TemplateAuditService {
     /**
      * 根据模板Id获取模板信息
      */
-    public Response getTemplateAudit(int tempId){
+    public Response getTemplateAudit(SearchArg searchArg){
         Response response = new Response(true, "获取成功");
-
+        Template templateAudit = templateAuditMapper.getTemplateAudit(searchArg);
+        response.setData(new ResParam("tempAuditData",  templateAudit));
         return response;
     }
 
@@ -157,7 +152,6 @@ public class TemplateAuditService {
         searchArg.setCompColumns("time", true);
 
         List<TemplateAudit> list = templateAuditMapper.getTemplateAuditList(searchArg);
-
         TemplateAuditSql sql = new TemplateAuditSql();
 
 
@@ -172,26 +166,47 @@ public class TemplateAuditService {
     /**
      * 根据模板Id更新模板信息
      */
-    public Response updateTemplateAudit(int tempId){
-        Response response = new Response(true, "更新成功");
+    public Response setTemplateAudit(TemplateAudit  templateAudit){
 
+        if(templateAudit.getTempId() < 1) return new Response(false, "更新失败，模板ID错误");
+        if(templateAudit.getAid() < 1) return new Response(false, "更新失败，账户ID错误");
+
+        int rt = templateAuditMapper.setTemplateAudit(templateAudit);
+        if(rt == 0) return new Response(false, "更新失败！");
+
+        Response response = new Response(true, "更新成功");
+        response.setData(new ResParam("sql", sql.setTemplateAudit(templateAudit)));
         return response;
     }
 
     /**
      * 添加模板审核记录
      */
-    public Response addTemplateAudit(TemplateAudit template){
-        Response response = new Response(true, "插入成功");
+    public Response addTemplateAudit(TemplateAudit templateAudit){
+        if(templateAudit.getTempId() < 1) return new Response(false, "创建失败，模板ID错误");
+        if(templateAudit.getAid() < 1) return new Response(false, "创建失败，账户ID错误");
 
+        Response response = new Response(true, "插入成功");
+        int rt = templateAuditMapper.addTemplateAudit(templateAudit);
+        if(rt == 0) return new Response(false, "添加失败");
+
+        response.setData(new ResParam("sql", sql.addTempAudit(templateAudit)));
         return response;
     }
 
     /**
      * 根据模板Id删除模板
      */
-    public Response deleteTemplateAudit(int tempId){
+    public Response delTemplateAudit(SearchArg searchArg){
+
+        if(searchArg.getTempId() < 1) return new Response(false, "删除失败，模板ID错误");
+        if(searchArg.getAid() < 1) return new Response(false, "删除失败，账户ID错误");
+
+        int rt = templateAuditMapper.delTemplateAudit(searchArg);
+        if(rt == 0) return new Response(false, "--删除失败--");
+
         Response response = new Response(true, "删除成功");
+        response.setData(new ResParam("sql", sql.delTemplateAudit(searchArg)));
 
         return response;
     }

@@ -49,12 +49,8 @@ public class DesignerService {
         Response response = new Response(true, "获取设计师信息");
 
         ResParam resParam = new ResParam();
-        try {
-            CommTool.mergeResParam(resParam, designer);
-        } catch (Exception e) {
-            response.setSuccess(false);
-            response.setMsg("合并Param出错");
-        }
+         int rt = CommTool.mergeResParam(resParam, designer);
+         if(rt != 0) response.setMsg("合并Param出错");
         resParam.put("list", list);
         response.setData(resParam);
         return response;
