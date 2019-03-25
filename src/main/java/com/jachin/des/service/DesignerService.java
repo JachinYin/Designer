@@ -40,7 +40,7 @@ public class DesignerService {
         if(aid < 1){
             return new Response(false, "Aid错误");
         }
-        Designer designer = designerMapper.getDesignerById(aid);
+        Designer designer = designerMapper.getDesigner(aid);
 
 
         // 获取设计师审核表的记录

@@ -15,7 +15,7 @@ import java.util.List;
 public interface DesignerMapper {
 
     @Select("select * from designer where aid=${aid};")
-    public Designer getDesignerById(@Param("aid") int aid);
+    public Designer getDesigner(@Param("aid") int aid);
 
     @SelectProvider(type = DesignerSql.class, method = "getDesignerList")
     public List<DesignerAudit> getDesignerList(DesignerAudit designerAudit);

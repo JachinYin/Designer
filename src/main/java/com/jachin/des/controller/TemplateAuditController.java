@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -21,9 +22,19 @@ public class TemplateAuditController {
     @Autowired
     TemplateAuditService templateAuditService;
 
+    @GetMapping("/addTemplateAudit")
+    public Response addTemplate(TemplateAudit templateAudit){
+        return templateAuditService.addTemplateAudit(templateAudit);
+    }
+
     @GetMapping("/getTemplateAuditList")// done
     public Response getTemplateListBySearch(SearchArg searchArg){
         return templateAuditService.getTemplateAuditList(searchArg);
+    }
+
+    @GetMapping("/setTemplateAudit/{type}")
+    public Response passOrRefuseTemplate(TemplateAudit templateAudit, @PathVariable("type")int type){
+        return templateAuditService.setTemplateAudit(templateAudit, type);
     }
 
     /**

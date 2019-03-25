@@ -35,7 +35,7 @@ public class TemplateAuditService {
     private TemplateAuditSql sql = new TemplateAuditSql();
 
     /**
-     * 【模板审核】- 查看详情
+     * 【模板审核】- 查看详情 done
      * @param searchArg 通用参数类
      * @return 返回类
      */
@@ -45,11 +45,12 @@ public class TemplateAuditService {
             return new Response(false, "模板Id错误");
         }
         Template template = templateMapper.getTemplate(searchArg);
+        searchArg.setCompColumns("time", true);
         // 获取该模板的所有审核记录 & 最新的一条记录
-        List<TemplateAudit> tempAuditList = templateAuditMapper.getTempAuditById(tempId);
+        List<TemplateAudit> tempAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
         TemplateAudit lastTempAudit = tempAuditList.get(0);
         // 获取设计师信息
-        Designer designer = designerMapper.getDesignerById(lastTempAudit.getAid());
+        Designer designer = designerMapper.getDesigner(lastTempAudit.getAid());
         // 构造返回数据类
         Response response = new Response(true, "获取模板详情信息");
 
@@ -121,11 +122,18 @@ public class TemplateAuditService {
 
         TemplateAudit lastTempAudit = templateAuditMapper.getTempAuditById(tempId).get(0);
         int price = lastTempAudit.getPrice();
-        price = price > 0 ? -price : 0;
+        price = price > 0 ? -price : 0;     // 价格大于0.说明是通过后再打回的
         lastTempAudit.setPrice(price);
         lastTempAudit.setStatus(DataDef.TemplateStatus.BACK);
         lastTempAudit.setTime(now);
-        templateAuditMapper.addTemplate(lastTempAudit);
+        int rt = templateAuditMapper.addTemplate(lastTempAudit); // 在模板审核表插入打回记录
+
+        // 如有必要，修改设计师收入情况
+        if(price != 0){
+//            designerMapper
+        }
+
+        if(rt == 0) return new Response(false, "系统错误，打回失败！");
 
         response = new Response(true, "模板打回");
         return response;
@@ -138,7 +146,7 @@ public class TemplateAuditService {
      */
     public Response getTemplateAudit(SearchArg searchArg){
         Response response = new Response(true, "获取成功");
-        Template templateAudit = templateAuditMapper.getTemplateAudit(searchArg);
+        TemplateAudit templateAudit = templateAuditMapper.getTemplateAudit(searchArg);
         response.setData(new ResParam("tempAuditData",  templateAudit));
         return response;
     }
@@ -166,13 +174,36 @@ public class TemplateAuditService {
     /**
      * 根据模板Id更新模板信息
      */
-    public Response setTemplateAudit(TemplateAudit  templateAudit){
+    public Response setTemplateAudit(TemplateAudit templateAudit, int type){
+
+        if(type == DataDef.TemplateStatus.BACK){
+
+            SearchArg searchArg = new SearchArg();
+            searchArg.setTempId(templateAudit.getTempId());
+            searchArg.setCompColumns("time", true);
+            List<TemplateAudit> templateAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
+            if(templateAuditList.isEmpty()){
+                log.error("getTemplateAuditList error; sql Search error;from TemplateAuditService");
+                return new Response(false, "系统错误");
+            }
+            TemplateAudit lastTemplateAudit = templateAuditList.get(0);
+
+            int price = lastTemplateAudit.getPrice();
+            price = price > 0 ? -price : 0;
+            lastTemplateAudit.setPrice(price);
+            lastTemplateAudit.setStatus(DataDef.TemplateStatus.BACK);
+            lastTemplateAudit.setTime(CommTool.getNowTime());
+
+            Response response = new Response(true, "打回成功");
+            response.setData(new ResParam("type", type));
+            return response;
+        }
 
         if(templateAudit.getTempId() < 1) return new Response(false, "更新失败，模板ID错误");
         if(templateAudit.getAid() < 1) return new Response(false, "更新失败，账户ID错误");
 
-        int rt = templateAuditMapper.setTemplateAudit(templateAudit);
-        if(rt == 0) return new Response(false, "更新失败！");
+//        int rt = templateAuditMapper.setTemplateAudit(templateAudit);
+//        if(rt == 0) return new Response(false, "更新失败！");
 
         Response response = new Response(true, "更新成功");
         response.setData(new ResParam("sql", sql.setTemplateAudit(templateAudit)));
@@ -183,12 +214,18 @@ public class TemplateAuditService {
      * 添加模板审核记录
      */
     public Response addTemplateAudit(TemplateAudit templateAudit){
-        if(templateAudit.getTempId() < 1) return new Response(false, "创建失败，模板ID错误");
-        if(templateAudit.getAid() < 1) return new Response(false, "创建失败，账户ID错误");
+        if(templateAudit.getTempId() < 1) return new Response(false, "操作失败，模板ID错误");
+        if(templateAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
 
-        Response response = new Response(true, "插入成功");
+        if(!CommTool.isNotBlank(templateAudit.getDesigner())){
+            // 如果设计师名字为空，则要根据 aid 去拿名字，然后存入templateAudit对象中
+            String nickName = designerMapper.getDesigner(templateAudit.getAid()).getNickName();
+            templateAudit.setDesigner(nickName);
+        }
+
+        Response response = new Response(true, "操作成功");
         int rt = templateAuditMapper.addTemplateAudit(templateAudit);
-        if(rt == 0) return new Response(false, "添加失败");
+        if(rt == 0) return new Response(false, "操作失败");
 
         response.setData(new ResParam("sql", sql.addTempAudit(templateAudit)));
         return response;

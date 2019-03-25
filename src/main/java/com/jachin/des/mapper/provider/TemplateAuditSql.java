@@ -7,6 +7,9 @@ import org.apache.ibatis.jdbc.SQL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 /**
  * @author Jachin
  * @since 2019/3/12 15:25
@@ -32,35 +35,6 @@ public class TemplateAuditSql extends SQL {
                 , aid, tempId, title, designer));
         return sb.toString();
     }
-
-    // 返回模板审核表展示数据的SQL
-    public String getShowList(TemplateAudit templateAudit){
-
-        StringBuilder sb = new StringBuilder();
-               // "ORDER BY time desc;";
-        sb.append("select * from `templateAudit` as x where time in ");
-        sb.append("(select max(time) from `templateAudit` as y ");
-        sb.append("where x.tempId = y.tempId) ");
-
-        // 拼接多条件
-//        int aid = templateAudit.getAid();
-        int tempId = templateAudit.getTempId();
-        String designer = templateAudit.getDesigner();
-        String title = templateAudit.getTitle();
-        String time = templateAudit.getTime();
-        int status = templateAudit.getStatus();
-
-        if(tempId > 0) sb.append(" and tempId = " + tempId);
-        if(designer != null && !designer.isEmpty()) sb.append(" and designer like '%" + designer + "%'");
-        if(title  != null && !title.isEmpty()) sb.append(" and title like '%" + title + "%'");
-        if(time != null && !time.isEmpty()) sb.append(" and time > '" + time + "' ");
-        if(status > 0) sb.append(" and status = " + status);
-
-
-        sb.append(" ORDER BY time desc;");
-        return sb.toString();
-    }
-
 
     // ===========
     public String getTemplateAudit(SearchArg searchArg){
@@ -113,9 +87,32 @@ public class TemplateAuditSql extends SQL {
         return sql;
     }
     public String addTemplateAudit(TemplateAudit templateAudit){
-        String sql = "";
 
-        return sql;
+        int aid = templateAudit.getAid();
+        int tempId = templateAudit.getTempId();
+        int price = templateAudit.getPrice();
+        String designer = templateAudit.getDesigner();
+        String reason = templateAudit.getReason();
+        String title = templateAudit.getTitle();
+        int status = templateAudit.getStatus();
+//        templateAudit.getTime();
+
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        templateAudit.setTime(sf.format(Calendar.getInstance().getTime()));
+
+        return new SQL(){{
+            INSERT_INTO(TABLE_TEMPLATE_AUDIT);
+            VALUES("aid", "#{aid}");
+            VALUES("tempId", "#{tempId}");
+            VALUES("price", "#{price}");
+            VALUES("time", "#{time}");
+            VALUES("status", "#{status}");
+            if(CommTool.isNotBlank(designer)) VALUES("designer", "#{designer}");
+            if(CommTool.isNotBlank(reason)) VALUES("reason", "#{reason}");
+            if(CommTool.isNotBlank(title)) VALUES("title", "#{title}");
+        }}.toString();
+
+
     }
     public String delTemplateAudit(SearchArg searchArg){
         String sql = "";

@@ -1,7 +1,6 @@
 package com.jachin.des.mapper;
 
 import com.jachin.des.entity.SearchArg;
-import com.jachin.des.entity.Template;
 import com.jachin.des.entity.TemplateAudit;
 import com.jachin.des.mapper.provider.TemplateAuditSql;
 import org.apache.ibatis.annotations.*;
@@ -17,12 +16,12 @@ public interface TemplateAuditMapper {
     public List<TemplateAudit> getTempAuditById(@Param("tempId")int tempId);
 
     @InsertProvider(type = TemplateAuditSql.class, method = "addTempAudit")
-    public void addTemplate(TemplateAudit templateAudit);
+    public int addTemplate(TemplateAudit templateAudit);
 
 
     // =====基础查改增删=====
     @SelectProvider(type = TemplateAuditSql.class, method = "getTemplateAudit")
-    public Template getTemplateAudit(SearchArg searchArg);
+    public TemplateAudit getTemplateAudit(SearchArg searchArg);
 
     @SelectProvider(type = TemplateAuditSql.class, method = "getTemplateAuditList")
     public List<TemplateAudit> getTemplateAuditList(SearchArg searchArg);
