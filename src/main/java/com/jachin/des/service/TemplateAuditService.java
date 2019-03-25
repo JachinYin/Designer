@@ -49,8 +49,9 @@ public class TemplateAuditService {
         // 获取该模板的所有审核记录 & 最新的一条记录
         List<TemplateAudit> tempAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
         TemplateAudit lastTempAudit = tempAuditList.get(0);
+        searchArg.setAid(template.getAid());
         // 获取设计师信息
-        Designer designer = designerMapper.getDesigner(lastTempAudit.getAid());
+        Designer designer = designerMapper.getDesigner(searchArg);
         // 构造返回数据类
         Response response = new Response(true, "获取模板详情信息");
 
@@ -173,17 +174,20 @@ public class TemplateAuditService {
 
     /**
      * 根据模板Id更新模板信息
+     * 对于当前的业务，只有两种可能：
+     * 1.基于通过业务的修改
+     * 2.基于打回业务的修改
+     * 然而最终，都是对审核记录表的新增而不是修改
      */
     public Response setTemplateAudit(TemplateAudit templateAudit, int type){
-
-        if(type == DataDef.TemplateStatus.BACK){
-
+        if(type == DataDef.TemplateStatus.BACK) {
             SearchArg searchArg = new SearchArg();
             searchArg.setTempId(templateAudit.getTempId());
             searchArg.setCompColumns("time", true);
             List<TemplateAudit> templateAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
             if(templateAuditList.isEmpty()){
                 log.error("getTemplateAuditList error; sql Search error;from TemplateAuditService");
+                // 能发起该请求，说明一定在数据库中存在数据，如果拿到的数据集为空，说明是拿数据的过程出错了
                 return new Response(false, "系统错误");
             }
             TemplateAudit lastTemplateAudit = templateAuditList.get(0);
@@ -194,20 +198,27 @@ public class TemplateAuditService {
             lastTemplateAudit.setStatus(DataDef.TemplateStatus.BACK);
             lastTemplateAudit.setTime(CommTool.getNowTime());
 
+            if(price != 0){
+//                designerMapper.
+            }
+
             Response response = new Response(true, "打回成功");
             response.setData(new ResParam("type", type));
             return response;
-        }
+        }else if(type == DataDef.TemplateStatus.PASS){
 
-        if(templateAudit.getTempId() < 1) return new Response(false, "更新失败，模板ID错误");
-        if(templateAudit.getAid() < 1) return new Response(false, "更新失败，账户ID错误");
+            if(templateAudit.getTempId() < 1) return new Response(false, "操作失败，模板ID错误");
+            if(templateAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
 
 //        int rt = templateAuditMapper.setTemplateAudit(templateAudit);
 //        if(rt == 0) return new Response(false, "更新失败！");
 
-        Response response = new Response(true, "更新成功");
-        response.setData(new ResParam("sql", sql.setTemplateAudit(templateAudit)));
-        return response;
+            Response response = new Response(true, "更新成功");
+            response.setData(new ResParam("sql", sql.setTemplateAudit(templateAudit)));
+            return response;
+        }else{
+            return new Response(false, "操作失败，没有指定更新类型.");
+        }
     }
 
     /**
@@ -218,8 +229,10 @@ public class TemplateAuditService {
         if(templateAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
 
         if(!CommTool.isNotBlank(templateAudit.getDesigner())){
+            SearchArg searchArg = new SearchArg();
+            searchArg.setAid(templateAudit.getAid());
             // 如果设计师名字为空，则要根据 aid 去拿名字，然后存入templateAudit对象中
-            String nickName = designerMapper.getDesigner(templateAudit.getAid()).getNickName();
+            String nickName = designerMapper.getDesigner(searchArg).getNickName();
             templateAudit.setDesigner(nickName);
         }
 
