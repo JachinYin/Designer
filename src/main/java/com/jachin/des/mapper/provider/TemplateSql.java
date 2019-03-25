@@ -4,43 +4,32 @@ import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.Template;
 import com.jachin.des.util.CommTool;
 import org.apache.ibatis.jdbc.SQL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * @author Jachin
  * @since 2019/3/12 15:25
  */
-public class TemplateSql{
+public class TemplateSql {
 
-    private static final Logger log = LoggerFactory.getLogger(TemplateSql.class);
-
-    private final String TABLE_TEMPLATE_AUDIT = "templateAudit";
-    private final String TABLE_TEMPLATE = "template";
-
-    public String getTemplate(SearchArg searchArg){
+    public String getTemplate(SearchArg searchArg) {
         int tempId = searchArg.getTempId();
-        return String.format("SELECT * FROM `%s` WHERE tempId=%d;", TABLE_TEMPLATE, tempId );
-}
+        return String.format("SELECT * FROM `%s` WHERE tempId=%d;", TableDef.TEMPLATE, tempId);
+    }
 
-    public String getTemplateList(SearchArg searchArg){
+    public String getTemplateList(SearchArg searchArg) {
         int aid = searchArg.getAid();
         boolean comp = searchArg.isComp();
         String columns = searchArg.getColumns();
 
-        String sql = String.format("SELECT * FROM `%s` WHERE aid=%d", TABLE_TEMPLATE, aid);
+        String sql = String.format("SELECT * FROM `%s` WHERE aid=%d", TableDef.TEMPLATE, aid);
 
-        if (comp){
+        if (comp) {
             sql = sql + "ORDER BY " + columns;
         }
         return sql;
     }
 
-    public String setTemplate(Template template){
+    public String setTemplate(Template template) {
         int tempId = template.getTempId();
         String title = template.getTitle();
         String keyWd = template.getKeyWd();
@@ -48,31 +37,27 @@ public class TemplateSql{
         String imgUrl = template.getImgUrl();
         String content = template.getContent();
 
-        Date time = Calendar.getInstance().getTime();
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String now = sf.format(time);
-
-        String sql = String.format("UPDATE `%s` SET time='%s' ",TABLE_TEMPLATE, now);
-        if(CommTool.isNotBlank(title)) {
-            sql = sql + ", title='" + title + "'";
+        String sql = String.format("UPDATE `%s` SET time='%s' ", TableDef.TEMPLATE, CommTool.getNowTime());
+        if (CommTool.isNotBlank(title)) {
+            sql = String.format("%s , title='%s'", sql, title);
         }
-        if(CommTool.isNotBlank(keyWd)) {
-            sql = sql + ", keyWd='" + keyWd + "'";
+        if (CommTool.isNotBlank(keyWd)) {
+            sql = String.format("%s , keyWd='%s'", sql, keyWd);
         }
-        if(CommTool.isNotBlank(info)) {
-            sql = sql + ", info='" + info + "'";
+        if (CommTool.isNotBlank(info)) {
+            sql = String.format("%s , info='%s'", sql, info);
         }
-        if(CommTool.isNotBlank(imgUrl)) {
-            sql = sql + ", imgUrl='" + imgUrl + "'";
+        if (CommTool.isNotBlank(imgUrl)) {
+            sql = String.format("%s , imgUrl='%s'", sql, imgUrl);
         }
-        if(CommTool.isNotBlank(content)) {
-            sql = sql + ", content='" + content + "'";
+        if (CommTool.isNotBlank(content)) {
+            sql = String.format("%s , content='%s'", sql, content);
         }
         sql = sql + " WHERE tempId=" + tempId + ";";
         return sql;
     }
 
-    public String addTemplate(Template template){
+    public String addTemplate(Template template) {
         int aid = template.getAid();
         String title = template.getTitle();
         String keyWd = template.getKeyWd();
@@ -80,23 +65,22 @@ public class TemplateSql{
         String imgUrl = template.getImgUrl();
         String content = template.getContent();
 
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        template.setTime(sf.format(Calendar.getInstance().getTime()));
+        template.setTime(CommTool.getNowTime());
 
-        return new SQL(){{
-                 INSERT_INTO(TABLE_TEMPLATE);
-                 VALUES("aid", "#{aid}");
-                 VALUES("time", "#{time}");
-                 if(CommTool.isNotBlank(title)) VALUES("title", "#{title}");
-                 if(CommTool.isNotBlank(keyWd)) VALUES("keyWd", "#{keyWd}");
-                 if(CommTool.isNotBlank(info)) VALUES("info", "#{info}");
-                 if(CommTool.isNotBlank(content)) VALUES("content", "#{content}");
-                 if(CommTool.isNotBlank(imgUrl)) VALUES("imgUrl", "#{imgUrl}");
-              }}.toString();
+        return new SQL() {{
+            INSERT_INTO(TableDef.TEMPLATE);
+            VALUES("aid", "#{aid}");
+            VALUES("time", "#{time}");
+            if (CommTool.isNotBlank(title)) VALUES("title", "#{title}");
+            if (CommTool.isNotBlank(keyWd)) VALUES("keyWd", "#{keyWd}");
+            if (CommTool.isNotBlank(info)) VALUES("info", "#{info}");
+            if (CommTool.isNotBlank(content)) VALUES("content", "#{content}");
+            if (CommTool.isNotBlank(imgUrl)) VALUES("imgUrl", "#{imgUrl}");
+        }}.toString();
     }
 
-    public String delTemplate(int tempId){
-        return String.format("DELETE FROM `%s` WHERE tempId=%d;", TABLE_TEMPLATE, tempId);
+    public String delTemplate(int tempId) {
+        return String.format("DELETE FROM `%s` WHERE tempId=%d;", TableDef.TEMPLATE, tempId);
     }
 
 }
