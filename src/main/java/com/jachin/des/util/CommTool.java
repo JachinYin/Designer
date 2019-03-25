@@ -6,11 +6,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * @author Jachin
@@ -18,27 +15,11 @@ import java.util.Locale;
  */
 public class CommTool {
 
-    public static final String imgUrl = "E:/Code/Graduation/Designer/Img";
+//    public static final String imgUrl = "E:/Code/Graduation/Designer/Img";
+    public static final String imgUrl = "D:/Jachin/Graduation/Code/Designer/Img";
 //    public static
-    public static Logger getLogger(){
-        return LoggerFactory.getLogger(Class.class);
-    }
-
-    public static String dealDateFormat(String oldDate) {
-
-        Date date1 = null;
-        DateFormat df2 = null;
-        try {
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-            Date date = df.parse(oldDate);
-            SimpleDateFormat df1 = new SimpleDateFormat ("EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
-            date1 = df1.parse(date.toString());
-            df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        } catch (ParseException e) {
-
-            e.printStackTrace();
-        }
-        return df2.format(date1);
+    public static Logger getLogger(Class classz){
+        return LoggerFactory.getLogger(classz);
     }
 
     public static int mergeResParam(ResParam resParam, AEntity template){
@@ -61,5 +42,10 @@ public class CommTool {
         return str != null && !str.isEmpty();
     }
 
-
+    public static String getNowTime(String format){
+        return new SimpleDateFormat(format).format(new Date());
+    }
+    public static String getNowTime(){
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    }
 }
