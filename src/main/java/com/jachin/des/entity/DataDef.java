@@ -7,6 +7,7 @@ package com.jachin.des.entity;
 public class DataDef {
     // 模板审核状态
     public static final class TemplateStatus {
+        public static final int DEFAULT = 0;       // 未提交审核
         public static final int WAIT = 1;       // 待审核
         public static final int BACK = 2;       // 打回
         public static final int PASS = 3;       // 通过
