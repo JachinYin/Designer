@@ -21,10 +21,10 @@ public interface DesignerMapper {
     @SelectProvider(type = DesignerSql.class, method = "getDesignerList")
     public List<DesignerAudit> getDesignerList(SearchArg searchArg);
 
-    @UpdateProvider(type = DesignerSql.class, method = "setDesigner")
+    @UpdateProvider(type = DesignerSql.class, method = "addDesigner")
     public int addDesigner(Designer designer);
 
-    @UpdateProvider(type = DesignerSql.class, method = "addDesigner")
+    @UpdateProvider(type = DesignerSql.class, method = "setDesigner")
     public int setDesigner(Designer designer);
 
     @UpdateProvider(type = DesignerSql.class, method = "delDesigner")

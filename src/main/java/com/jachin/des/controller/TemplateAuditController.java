@@ -22,42 +22,33 @@ public class TemplateAuditController {
     @Autowired
     TemplateAuditService templateAuditService;
 
-    @GetMapping("/addTemplateAudit")
-    public Response addTemplate(TemplateAudit templateAudit){
-        return templateAuditService.addTemplateAudit(templateAudit);
+    // 业务逻辑请求
+
+    /** done
+     * 用于模板审核表。点击查看时，返回展示数据信息
+     * 根据模板ID来获取数据，包括设计师信息，该模板所有审核记录，以及模板信息
+     */
+    @GetMapping("/getAuditShowData")
+//    @GetMapping("/getTempAuditById")
+    public Response getTempById(SearchArg searchArg){
+        return templateAuditService.getAuditShowData(searchArg);
     }
+
+    @GetMapping("/doTemplateAudit/{type}")
+    public Response passOrRefuseTemplate(TemplateAudit templateAudit, @PathVariable("type")String type){
+        return templateAuditService.doTemplateAudit(templateAudit, type);
+    }
+
+    // =====基础请求=====
 
     @GetMapping("/getTemplateAuditList")// done
     public Response getTemplateListBySearch(SearchArg searchArg){
         return templateAuditService.getTemplateAuditList(searchArg);
     }
 
-    @GetMapping("/setTemplateAudit/{type}")
-    public Response passOrRefuseTemplate(TemplateAudit templateAudit, @PathVariable("type")int type){
-        return templateAuditService.setTemplateAudit(templateAudit, type);
-    }
-
-    /**
-     * 用于模板审核表。点击查看时，返回展示数据信息
-     * 根据模板ID来获取数据，包括设计师信息，该模板所有审核记录，以及模板信息
-     * @param searchArg 模板对象，会自动映射相同的字段到对象中
-     * @return ResParam
-     */
-    @GetMapping("/getTempAuditById")
-    public Response getTempById(SearchArg searchArg){
-        return templateAuditService.getAuditShowData(searchArg);
-    }
-
-    // 模板通过
-    @GetMapping("/tempPass")
-    public Response tempPass(TemplateAudit templateAudit){
-        return templateAuditService.tempPass(templateAudit.getTempId(), templateAudit.getPrice());
-    }
-
-    // 模板打回
-    @GetMapping("/tempRefuse")
-    public Response tempRefuse(TemplateAudit templateAudit){
-        return templateAuditService.tempRefuse(templateAudit.getTempId(), templateAudit.getReason());
+    @GetMapping("/addTemplateAudit")
+    public Response addTemplate(TemplateAudit templateAudit){
+        return templateAuditService.addTemplateAudit(templateAudit);
     }
 
 }

@@ -211,6 +211,9 @@ public class Designer implements AEntity{
         return "Designer{" +
                 "aid=" + aid +
                 ", status=" + status +
+                ", balance=" + balance +
+                ", totalPrice=" + totalPrice +
+                ", nickName='" + nickName + '\'' +
                 ", intro='" + intro + '\'' +
                 ", idNum='" + idNum + '\'' +
                 ", realName='" + realName + '\'' +
