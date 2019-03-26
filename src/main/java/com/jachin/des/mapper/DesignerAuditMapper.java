@@ -1,6 +1,5 @@
 package com.jachin.des.mapper;
 
-import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.DesignerAudit;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.mapper.provider.DesignerAuditSql;
@@ -15,7 +14,7 @@ public interface DesignerAuditMapper {
     // 查改增删
 
     @SelectProvider(type = DesignerAuditSql.class, method = "getDesignerAudit")
-    public Designer getDesigner(SearchArg searchArg);
+    public DesignerAudit getDesignerAudit(SearchArg searchArg);
 
     @SelectProvider(type = DesignerAuditSql.class, method = "getDesignerAuditList")
     public List<DesignerAudit> getDesignerAuditList(SearchArg searchArg);

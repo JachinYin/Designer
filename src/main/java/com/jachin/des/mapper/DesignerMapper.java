@@ -25,7 +25,7 @@ public interface DesignerMapper {
     public int addDesigner(Designer designer);
 
     @UpdateProvider(type = DesignerSql.class, method = "addDesigner")
-    public int setDesigner(Designer designer, SearchArg searchArg);
+    public int setDesigner(Designer designer);
 
     @UpdateProvider(type = DesignerSql.class, method = "delDesigner")
     public int delDesigner(SearchArg searchArg);

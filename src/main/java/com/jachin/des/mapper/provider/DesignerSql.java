@@ -15,7 +15,7 @@ public class DesignerSql extends SQL {
     // =======基础查改增删=======
 
     public String getDesigner(SearchArg searchArg) {
-        return "select * from designer where aid=${aid};";
+        return String.format("SELECT * FROM `%s` WHERE aid=%d", TableDef.DESIGNER, searchArg.getAid());
     }
 
     // 获取查询designer的Sql
@@ -113,7 +113,10 @@ public class DesignerSql extends SQL {
         }}.toString();
     }
 
-    public String delDesigner(Designer designer) {
+    public String delDesigner(SearchArg searchArg) {
+        int aid = searchArg.getAid();
+        Designer designer = new Designer();
+        designer.setAid(aid);
         // 删除设计师，就是把设计师的状态设置为【已删除】
         designer.setStatus(DataDef.DesignerStatus.DEL);
         return setDesigner(designer);
