@@ -19,6 +19,14 @@ public class Response {
         this.msg = msg;
         this.data = new HashMap<>();
     }
+    public Response(boolean success) {
+        this.success = success;
+        if(success)
+            this.msg = "操作成功~";
+        else
+            this.msg = "操作失败";
+        this.data = new HashMap<>();
+    }
 
     public boolean isSuccess() {
         return success;

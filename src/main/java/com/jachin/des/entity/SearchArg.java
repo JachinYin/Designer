@@ -9,11 +9,12 @@ public class SearchArg {
     private int id;
     private int aid;
     private int tempId;
+    private int status;
+    private int type;
     private String title;
     private String designer;
     private String begTime;
     private String endTime;
-    private int status;
     private String nickName;
 
     private boolean distinct;     // 是否去重
@@ -45,6 +46,22 @@ public class SearchArg {
 
     public void setTempId(int tempId) {
         this.tempId = tempId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public String getTitle() {
@@ -79,20 +96,20 @@ public class SearchArg {
         this.endTime = endTime;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getNickName() {
         return nickName;
     }
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public boolean isDistinct() {
+        return distinct;
+    }
+
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
     }
 
     public String getColumns() {
@@ -109,14 +126,6 @@ public class SearchArg {
 
     public void setComp(boolean comp) {
         this.comp = comp;
-    }
-
-    public boolean isDistinct() {
-        return distinct;
-    }
-
-    public void setDistinct(boolean distinct) {
-        this.distinct = distinct;
     }
 
     // 设置排序规则

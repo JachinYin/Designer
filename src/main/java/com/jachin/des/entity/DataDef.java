@@ -22,12 +22,47 @@ public class DataDef {
         public static final int DEL = 4;        // 已注销
     }
 
-
     // 设计师状态
     public static final class CashFlag {
-        public static final int WAIT = 1;       // 收入
-        public static final int BACK = 2;       // 提现
+        public static final int INCOME = 1;       // 收入
+        public static final int WITHDRAW = 2;       // 提现
+        public static final int DELTA_PRICE = 3;       // 提现
     }
 
+    public static int getTemplateStatus(String name) {
+        int flag = -1;
+        switch (name) {
+            case "pass":
+                flag = TemplateStatus.PASS;
+                break;
+            case "back":
+                flag = TemplateStatus.BACK;
+                break;
+            case "wait":
+                flag = TemplateStatus.WAIT;
+                break;
+            case "default":
+                flag = TemplateStatus.DEFAULT;
+                break;
+            default:
+                flag = 0;
+        }
+        return flag;
+    }
+
+    public static int getCashFlag(String name) {
+        int flag = -1;
+        switch (name) {
+            case "withdraw":
+                flag = CashFlag.WITHDRAW;
+                break;
+            case "income":
+                flag = CashFlag.INCOME;
+                break;
+            default:
+                flag = 0;
+        }
+        return flag;
+    }
 
 }
