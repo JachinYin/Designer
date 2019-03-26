@@ -1,5 +1,6 @@
 package com.jachin.des.controller;
 
+import com.jachin.des.entity.SearchArg;
 import com.jachin.des.service.CashFlowService;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class CashFlowController {
     CashFlowService cashFlowService;
 
     @GetMapping("/getAllCashFlowList")
-    public Response getAllList(){
-        return cashFlowService.getAllList();
+    public Response getAllList(SearchArg searchArg){
+        return cashFlowService.getCashFlowList(searchArg);
     }
 }

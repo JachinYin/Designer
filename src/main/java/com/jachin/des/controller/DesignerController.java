@@ -1,7 +1,7 @@
 package com.jachin.des.controller;
 
 import com.jachin.des.entity.SearchArg;
-import com.jachin.des.mapper.DesignerAuditMapper;
+import com.jachin.des.service.DesignerAuditService;
 import com.jachin.des.service.DesignerService;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,17 +19,17 @@ public class DesignerController {
     DesignerService designerService;
 
     @Autowired
-    DesignerAuditMapper designerAuditMapper;
+    DesignerAuditService designerAuditService;
 
     // 获取设计师审核列表
-//    @GetMapping("/getDesignerList")
-//    public Response getDesignerList(SearchArg searchArg){
-//        return designerAuditMapper.getDesignerAuditList(searchArg);
-//    }
+    @GetMapping("/getDesignerAuditList")
+    public Response getDesignerList(SearchArg searchArg){
+        return designerAuditService.getDesignerAuditList(searchArg);
+    }
 
     // 根据 aid 获取设计师信息【用于设计师审核详情】
     @GetMapping("/getDesigner")
     public Response getDesignerByAid(SearchArg searchArg){
-        return designerService.getDesignerByAid(searchArg);
+        return designerService.getDesigner(searchArg);
     }
 }
