@@ -11,22 +11,7 @@ import org.apache.ibatis.jdbc.SQL;
  */
 public class TemplateAuditSql extends SQL {
 
-    // 设计师前台提交审核记录的SQL
-    public String addTempAudit(TemplateAudit templateAudit){
-        int aid = templateAudit.getAid();
-        int tempId = templateAudit.getTempId();
-        String title = templateAudit.getTitle();
-        String designer = templateAudit.getDesigner();
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(TableDef.TEMPLATE_AUDIT);
-        sb.append(" (aid, tempId, title, designer)"); // 列名
-        sb.append(String.format(" VALUES (%d, %d, %s, %s);"
-                , aid, tempId, title, designer));
-        return sb.toString();
-    }
-
-    // ===========
+    // ======基础查改增删=====
     public String getTemplateAudit(SearchArg searchArg){
         int id = searchArg.getId();
         return String.format("SELECT * FROM `%s` WHERE id=%d ;", TableDef.TEMPLATE_AUDIT, id);
@@ -34,9 +19,7 @@ public class TemplateAuditSql extends SQL {
 
     // 通过 distinct 来指定是否需要去重（该去重是结合业务逻辑的）
     public String getTemplateAuditList(SearchArg searchArg){
-
-        String sql = "";
-
+        String sql;
         boolean distinct = searchArg.isDistinct();
         if(distinct){
             sql = String.format("SELECT * FROM `%s` AS x " +
@@ -73,8 +56,28 @@ public class TemplateAuditSql extends SQL {
     }
 
     public String setTemplateAudit(TemplateAudit templateAudit){
-        String sql = ";";
-        return sql;
+        int aid = templateAudit.getAid();
+        int tempId = templateAudit.getTempId();
+        int status = templateAudit.getStatus();
+        int price = templateAudit.getPrice();
+        String title = templateAudit.getTitle();
+        String designer = templateAudit.getDesigner();
+        String reason = templateAudit.getReason();
+        String time = templateAudit.getTime();
+
+        return new SQL() {{
+            UPDATE(TableDef.DESIGNER_AUDIT);
+            SET("id=#{id}");          // 保证 update 语句至少拥有一个set项
+            if(aid > 0) SET("aid=#{aid}");
+            if(tempId > 0) SET("tempId=#{tempId}");
+            if(status > 0) SET("status=#{status}");
+            if(price > 0) SET("price=#{price}");
+            if (CommTool.isNotBlank(title)) SET("title=#{title}");
+            if (CommTool.isNotBlank(designer)) SET("designer=#{designer}");
+            if (CommTool.isNotBlank(reason)) SET("reason=#{reason}");
+            if (CommTool.isNotBlank(time)) SET("time=#{time}");
+            WHERE("id=#{id}");
+        }}.toString();
     }
 
     public String addTemplateAudit(TemplateAudit templateAudit){
@@ -89,11 +92,12 @@ public class TemplateAuditSql extends SQL {
 
         return new SQL(){{
             INSERT_INTO(TableDef.TEMPLATE_AUDIT);
-            VALUES("aid", "#{aid}");
-            VALUES("tempId", "#{tempId}");
-            VALUES("price", "#{price}");
             VALUES("time", "#{time}");
-            VALUES("status", "#{status}");
+
+            if(aid > 0) VALUES("aid", "#{aid}");
+            if(tempId > 0) VALUES("tempId", "#{tempId}");
+            if(price > 0) VALUES("price", "#{price}");
+            if(status > 0) VALUES("status", "#{status}");
             if(CommTool.isNotBlank(designer)) VALUES("designer", "#{designer}");
             if(CommTool.isNotBlank(reason)) VALUES("reason", "#{reason}");
             if(CommTool.isNotBlank(title)) VALUES("title", "#{title}");
@@ -101,25 +105,6 @@ public class TemplateAuditSql extends SQL {
     }
 
     public String delTemplateAudit(SearchArg searchArg){
-        String sql = "";
-
-        return sql;
+        return String.format("DELETE from `%s` where id=%d", TableDef.TEMPLATE_AUDIT, searchArg.getId());
     }
-
-
-
-
-
-
-
-
-
-    /*获取模板审核展示数据（分页）*/
-    /*筛选模板审核展示数据（分页）*/
-    /*导出筛选的模板数据（前端分页的话就不需要了）*/
-    /*修改模板审核记录*/
-    /*获取模板统计数据*/
-    /*获取模板统计数据*/
-    /*查看单个模板具体信息*/
-    /*获取单个模板审核记录*/
 }

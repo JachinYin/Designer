@@ -1,5 +1,6 @@
 package com.jachin.des.mapper.provider;
 
+import com.jachin.des.entity.DataDef;
 import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.util.CommTool;
@@ -11,13 +12,15 @@ import org.apache.ibatis.jdbc.SQL;
  */
 public class DesignerSql extends SQL {
 
+    // =======基础查改增删=======
+
     public String getDesigner(SearchArg searchArg) {
         return "select * from designer where aid=${aid};";
     }
 
     // 获取查询designer的Sql
     public String getDesignerList(SearchArg searchArg) {
-        String sql = "";
+        String sql;
         boolean distinct = searchArg.isDistinct();
         if(distinct) {
             sql = String.format("SELECT * FROM `%s` AS x " +
@@ -27,8 +30,7 @@ public class DesignerSql extends SQL {
         }else {
             sql = String.format("SELECT * FROM `%s` WHERE aid>0", TableDef.DESIGNER_AUDIT);
         }
-            // 拼接多条件
-//        int aid = templateAudit.getAid();
+
         int aid = searchArg.getAid();
         int status = searchArg.getStatus();
         String nickName = searchArg.getNickName();
@@ -49,9 +51,7 @@ public class DesignerSql extends SQL {
         return sql;
     }
 
-    public String setDesigner(Designer designer, SearchArg searchArg) {
-
-        int aid = designer.getAid();
+    public String setDesigner(Designer designer) {
         int status = designer.getStatus();
         int balance = designer.getBalance();
         int totalPrice = designer.getTotalPrice();
@@ -74,8 +74,10 @@ public class DesignerSql extends SQL {
         String frontImg = designer.getFrontImg();
         String reverseImg = designer.getReverseImg();
 
-        String sql = new SQL() {{
+        return new SQL() {{
             UPDATE(TableDef.DESIGNER);
+
+            SET("aid=#{aid}");  // 保证 update 语句至少拥有一个set项
 
             if(status > 0) SET("status=#{status}");
             if(balance > 0) SET("balance=#{balance}");
@@ -102,24 +104,19 @@ public class DesignerSql extends SQL {
 
             WHERE("aid=#{aid}");
         }}.toString();
-
-        return sql;
     }
 
     public String addDesigner(Designer designer) {
-
-        int aid = designer.getAid();
-        designer.setStatus(0);
-
         return new SQL(){{
             INSERT_INTO(TableDef.DESIGNER);
             VALUES("aid", "#{aid}");
-            VALUES("status", "#{status}");
         }}.toString();
     }
 
-    public String delDesigner(SearchArg searchArg) {
-        return "select * from designer where aid=${aid};";
+    public String delDesigner(Designer designer) {
+        // 删除设计师，就是把设计师的状态设置为【已删除】
+        designer.setStatus(DataDef.DesignerStatus.DEL);
+        return setDesigner(designer);
     }
 
 }
