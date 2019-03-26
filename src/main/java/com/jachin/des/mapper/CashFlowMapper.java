@@ -1,8 +1,9 @@
 package com.jachin.des.mapper;
 
 import com.jachin.des.entity.CashFlow;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.jachin.des.entity.SearchArg;
+import com.jachin.des.mapper.provider.CashFlowSql;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -10,6 +11,19 @@ import java.util.List;
 @Mapper
 public interface CashFlowMapper {
 
-    @Select("SELECT * FROM cashFlow ORDER BY time DESC;")
-    public List<CashFlow> getAllList();
+    // =====基础查改增删=====
+    @SelectProvider(type = CashFlowSql.class, method = "getCashFlow")
+    public CashFlow getCashFlow(SearchArg searchArg);
+
+    @SelectProvider(type = CashFlowSql.class, method = "getCashFlowList")
+    public List<CashFlow> getCashFlowList(SearchArg searchArg);
+
+    @UpdateProvider(type = CashFlowSql.class, method = "setCashFlow")
+    public int setCashFlow(CashFlow template);
+
+    @InsertProvider(type = CashFlowSql.class, method = "addCashFlow")
+    public int addCashFlow(CashFlow template);
+
+    @DeleteProvider(type = CashFlowSql.class, method = "delCashFlow")
+    public int delCashFlow(SearchArg searchArg);
 }

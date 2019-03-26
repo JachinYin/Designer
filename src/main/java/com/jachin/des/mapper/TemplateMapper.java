@@ -11,7 +11,6 @@ import java.util.List;
 @Mapper
 public interface TemplateMapper {
 
-
     // =====基础查改增删=====
     @SelectProvider(type = TemplateSql.class, method = "getTemplate")
     public Template getTemplate(SearchArg searchArg);

@@ -15,10 +15,6 @@ public interface TemplateAuditMapper {
     @Select("SELECT * FROM `templateAudit` where tempId = #{tempId} ORDER BY time desc;")
     public List<TemplateAudit> getTempAuditById(@Param("tempId")int tempId);
 
-    @InsertProvider(type = TemplateAuditSql.class, method = "addTempAudit")
-    public int addTemplate(TemplateAudit templateAudit);
-
-
     // =====基础查改增删=====
     @SelectProvider(type = TemplateAuditSql.class, method = "getTemplateAudit")
     public TemplateAudit getTemplateAudit(SearchArg searchArg);
