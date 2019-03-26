@@ -8,6 +8,7 @@ package com.jachin.des.entity;
 public class Template implements AEntity{
     private int tempId;     // 模板id
     private int aid;        // 账户id
+    private int status;        // 模板状态
     private String title;   // 标题
     private String keyWd;   // 关键词
     private String info;    // 行业信息
@@ -29,6 +30,14 @@ public class Template implements AEntity{
 
     public void setAid(int aid) {
         this.aid = aid;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getTime() {
