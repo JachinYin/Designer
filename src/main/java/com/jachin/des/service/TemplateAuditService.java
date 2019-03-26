@@ -1,6 +1,7 @@
 package com.jachin.des.service;
 
 import com.jachin.des.entity.*;
+import com.jachin.des.mapper.CashFlowMapper;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.mapper.TemplateMapper;
@@ -32,6 +33,8 @@ public class TemplateAuditService {
     TemplateMapper templateMapper;
     @Autowired
     DesignerMapper designerMapper;
+    @Autowired
+    CashFlowMapper cashFlowMapper;
 
     private TemplateAuditSql templateAuditSql = new TemplateAuditSql();
     private DesignerSql designerSql = new DesignerSql();
@@ -145,44 +148,105 @@ public class TemplateAuditService {
     // 执行审核逻辑的服务
     public Response doTemplateAudit(TemplateAudit templateAudit, int type){
         if(type == 0) return new Response(false, "请求参数错误");
-        if(type == DataDef.TemplateStatus.BACK) {
-            SearchArg searchArg = new SearchArg();
-            searchArg.setTempId(templateAudit.getTempId());
-            searchArg.setCompColumns("time", true);
-            List<TemplateAudit> templateAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
-            if(templateAuditList.isEmpty()){
-                log.error("getTemplateAuditList error; templateAuditSql Search error;from TemplateAuditService");
-                // 能发起该请求，说明一定在数据库中存在数据，如果拿到的数据集为空，说明是拿数据的过程出错了
-                return new Response(false, "系统错误");
-            }
-            TemplateAudit lastTemplateAudit = templateAuditList.get(0);
 
-            int price = lastTemplateAudit.getPrice();
+        int tempId = templateAudit.getTempId();
+        int aid = templateAudit.getAid();
+        if(tempId < 1) return new Response(false, "操作失败，模板ID错误。");
+        if(aid < 1) return new Response(false, "操作失败，账户ID错误。");
+
+        SearchArg searchArg = new SearchArg();
+        searchArg.setTempId(tempId);
+        searchArg.setCompColumns("time", true);
+        List<TemplateAudit> templateAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
+
+        TemplateAudit lastTemplateAudit; // 取最新的一条记录
+        try {
+            lastTemplateAudit = templateAuditList.get(0);
+        } catch (Exception e) {
+            log.error("getTemplateAuditList error; templateAuditSql Search error;from TemplateAuditService");
+            // 能发起该请求，说明一定在数据库中存在数据，如果拿到的数据集为空，说明是拿数据的过程出错了
+            return new Response(false, "系统错误，请联系管理员。");
+        }
+
+        // 获取设计师信息
+        searchArg = new SearchArg();
+        searchArg.setAid(aid);
+        Designer designer = designerMapper.getDesigner(searchArg);
+        if(designer == null) return new Response(false, "系统错误，请联系管理员。");
+
+        if(type == DataDef.TemplateStatus.BACK) {
+            int price = lastTemplateAudit.getPrice(); // 价格大于 0 说明是在【通过态】进行的操作
             price = price > 0 ? -price : 0;
             lastTemplateAudit.setPrice(price);
             lastTemplateAudit.setStatus(DataDef.TemplateStatus.BACK);
-            lastTemplateAudit.setTime(CommTool.getNowTime());
 
-            if(price != 0){
-//                designerMapper.
+            int rt = templateAuditMapper.addTemplateAudit(lastTemplateAudit);
+            if(rt == 0) return new Response(false); // 如果插入失败，就不执行设计师表的修改
+
+            if(price < 0){
+                Designer designerData = new Designer();
+                designerData.setAid(aid);
+                designerData.setBalance(designer.getBalance() + price); // 打回时只需要扣除设计师余额
+                rt = designerMapper.setDesigner(designerData);
+                if(rt == 0) { // 这个错误涉及到事务了，需要手动帮客户改表
+                    log.error(String.format("Temp refused,but designer table don't update" +
+                                    ".{aid=%d},{tempId=%d}"
+                            , aid, tempId));
+                    return new Response(true, "打回成功，请联系管理员。");
+                }
+                CashFlow cashFlow = new CashFlow();
+                cashFlow.setAid(aid);
+                cashFlow.setTempId(tempId);
+                cashFlow.setPrice(price);
+                cashFlow.setType(DataDef.CashFlag.DELTA_PRICE);
+                cashFlow.setBalance(designerData.getBalance());
+                rt = cashFlowMapper.addCashFlow(cashFlow);
+                if(rt == 0) { // 这个错误涉及到事务了，需要手动帮客户改表
+                    log.error(String.format("Temp refused,but cashFlow table don't update" +
+                                    ".{aid=%d},{tempId=%d}"
+                            , aid, tempId));
+                    return new Response(true, "打回成功，请联系管理员。");
+                }
             }
-
-            Response response = new Response(true, "打回成功");
-            response.setData(new ResParam("type", type));
-            return response;
+            return new Response(true, "打回成功");
         }else if(type == DataDef.TemplateStatus.PASS){
+            int price = templateAudit.getPrice(); // 设置通过的采购价
+            if(price < 1) return new Response(false, "模板价格错误");
 
-            if(templateAudit.getTempId() < 1) return new Response(false, "操作失败，模板ID错误");
-            if(templateAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
+            lastTemplateAudit.setPrice(price);
+            lastTemplateAudit.setStatus(DataDef.TemplateStatus.PASS);
 
-//        int rt = templateAuditMapper.setTemplateAudit(templateAudit);
-//        if(rt == 0) return new Response(false, "更新失败！");
+            int rt = templateAuditMapper.addTemplateAudit(lastTemplateAudit);
+            if(rt == 0) return new Response(false);
 
-            Response response = new Response(true, "更新成功");
-            response.setData(new ResParam("templateAuditSql", templateAuditSql.setTemplateAudit(templateAudit)));
-            return response;
-        }else{
-            return new Response(false, "操作失败，没有指定更新类型.");
+            Designer designerData = new Designer();
+            designerData.setAid(aid);
+            designerData.setBalance(designer.getBalance() + price); // 设计师余额
+            designerData.setBalance(designer.getTotalPrice() + price); // 设计师总收入，通过会一直累加
+            rt = designerMapper.setDesigner(designerData);
+            if(rt == 0) { // 这个错误涉及到事务了，需要手动帮客户改表
+                log.error(String.format("Temp refused,but designer table don't update" +
+                                ".{aid=%d},{tempId=%d}"
+                        , aid, tempId));
+                return new Response(true, "打回成功，请联系管理员。");
+            }
+            CashFlow cashFlow = new CashFlow();
+            cashFlow.setAid(aid);
+            cashFlow.setTempId(tempId);
+            cashFlow.setPrice(price);
+            cashFlow.setType(DataDef.CashFlag.INCOME);
+            cashFlow.setBalance(designerData.getBalance());
+            rt = cashFlowMapper.addCashFlow(cashFlow);
+            if(rt == 0) { // 这个错误涉及到事务了，需要手动帮客户改表
+                log.error(String.format("Temp refused,but cashFlow table don't update" +
+                                ".{aid=%d},{tempId=%d}"
+                        , aid, tempId));
+                return new Response(true, "打回成功，请联系管理员。");
+            }
+            return new Response(true);
+        }
+        else{
+            return new Response(false);
         }
     }
 
