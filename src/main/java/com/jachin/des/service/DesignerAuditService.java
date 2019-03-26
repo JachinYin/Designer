@@ -1,6 +1,16 @@
 package com.jachin.des.service;
 
+import com.jachin.des.entity.DataDef;
+import com.jachin.des.entity.DesignerAudit;
+import com.jachin.des.entity.SearchArg;
+import com.jachin.des.mapper.DesignerAuditMapper;
+import com.jachin.des.mapper.provider.DesignerAuditSql;
+import com.jachin.des.util.ResParam;
+import com.jachin.des.util.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author Jachin
@@ -8,4 +18,99 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DesignerAuditService {
+
+    @Autowired
+    DesignerAuditMapper designerAuditMapper;
+
+    DesignerAuditSql sql = new DesignerAuditSql();
+
+    /**
+     * 审核设计师
+     * 对于当前的业务，只有两种可能：
+     * 1.基于通过业务的修改
+     * 2.基于打回业务的修改
+     * 然而最终，都是对审核记录表的新增操作
+     */
+    public Response doDesignerAudit(DesignerAudit designerAudit, String typeName) {
+        int type = DataDef.getTemplateStatus(typeName);
+        if(type == 0) return new Response(false, "请求参数错误");
+
+        /*
+        * 通过
+        * 1.
+        *
+         */
+
+        int aid = designerAudit.getAid();
+        SearchArg searchArg = new SearchArg();
+        searchArg.setAid(aid);
+        List<DesignerAudit> designerAuditList = designerAuditMapper.getDesignerAuditList(searchArg);
+        DesignerAudit lastDesignerAudit;
+        try {
+            lastDesignerAudit = designerAuditList.get(0);
+        }catch (Exception e){
+            return new Response(false, "系统错误，请联系管理员。");
+        }
+
+        if(type == DataDef.DesignerStatus.BACK){
+            lastDesignerAudit.setStatus(DataDef.DesignerStatus.BACK);
+        }
+        else if(type == DataDef.DesignerStatus.PASS){
+            lastDesignerAudit.setStatus(DataDef.DesignerStatus.PASS);
+        }
+
+        int rt = designerAuditMapper.addDesignerAudit(lastDesignerAudit);
+        if(rt == 0) return new Response(false);
+        return new Response(true);
+    }
+
+    // =====基础查改增删=====
+
+    public Response getDesignerAudit(SearchArg searchArg){
+        Response response = new Response(true, "获取成功");
+        DesignerAudit designerAudit = designerAuditMapper.getDesignerAudit(searchArg);
+        response.setData(new ResParam("designerAuditData",  designerAudit));
+        return response;
+    }
+
+    public Response getDesignerAuditList(SearchArg searchArg){
+        searchArg.setCompColumns("time", true);
+        List<DesignerAudit> list = designerAuditMapper.getDesignerAuditList(searchArg);
+
+        Response response = new Response(true, "获取成功");
+        ResParam resParam = new ResParam();
+        resParam.put("list", list);
+        resParam.put("designerAuditSql", sql.getDesignerAuditList(searchArg));
+        response.setData(resParam);
+        return response;
+    }
+
+    public Response setDesignerAudit(DesignerAudit designerAudit){
+        if(designerAudit.getId() == 0) return new Response(false, "操作失败，ID错误。");
+        int rt = designerAuditMapper.setDesignerAudit(designerAudit);
+        if(rt == 0) return new Response(false);
+        return new Response(true);
+    }
+
+    public Response addDesignerAudit(DesignerAudit designerAudit){
+        if(designerAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
+
+        Response response = new Response(true);
+        int rt = designerAuditMapper.addDesignerAudit(designerAudit);
+        if(rt == 0) return new Response(false);
+
+        response.setData(new ResParam("designerAuditSql", sql.addDesignerAudit(designerAudit)));
+        return response;
+    }
+
+    public Response delDesignerAudit(SearchArg searchArg){
+        if(searchArg.getAid() < 1) return new Response(false, "操作失败，账户ID错误。");
+
+        int rt = designerAuditMapper.delDesignerAudit(searchArg);
+        if(rt == 0) return new Response(false);
+
+        Response response = new Response(true);
+        response.setData(new ResParam("designerAuditSql", sql.delDesignerAudit(searchArg)));
+        return response;
+    }
 }
