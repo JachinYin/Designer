@@ -52,7 +52,7 @@ public class DesignerService {
     public Response getDesignerList(SearchArg searchArg){
 
         // 获取设计师表的记录
-        List<DesignerAudit> designerList = designerMapper.getDesignerList(searchArg);
+        List<Designer> designerList = designerMapper.getDesignerList(searchArg);
 
         ResParam resParam = new ResParam();
         resParam.put("list", designerList);

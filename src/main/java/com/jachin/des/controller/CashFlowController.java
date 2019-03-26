@@ -1,5 +1,6 @@
 package com.jachin.des.controller;
 
+import com.jachin.des.entity.CashFlow;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.service.CashFlowService;
 import com.jachin.des.util.Response;
@@ -17,8 +18,20 @@ public class CashFlowController {
     @Autowired
     CashFlowService cashFlowService;
 
-    @GetMapping("/getAllCashFlowList")
-    public Response getAllList(SearchArg searchArg){
+    @GetMapping("/withDraw")
+    public Response withdrawCash(CashFlow cashFlow){
+        return cashFlowService.addCashFlow(cashFlow);
+    }
+
+    @GetMapping("/getCashFlowShowList")
+    public Response getCashFlowShowList(SearchArg searchArg){
+        return cashFlowService.getCashFlowShowList(searchArg);
+    }
+
+    // ========
+
+    @GetMapping("/getCashFlowList")
+    public Response getCashFlowList(SearchArg searchArg){
         return cashFlowService.getCashFlowList(searchArg);
     }
 }

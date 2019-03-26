@@ -1,16 +1,15 @@
 package com.jachin.des.service;
 
-import com.jachin.des.entity.CashFlow;
-import com.jachin.des.entity.DataDef;
-import com.jachin.des.entity.Designer;
-import com.jachin.des.entity.SearchArg;
+import com.jachin.des.entity.*;
 import com.jachin.des.mapper.CashFlowMapper;
 import com.jachin.des.mapper.DesignerMapper;
+import com.jachin.des.util.CommTool;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,8 +25,9 @@ public class CashFlowService {
     CashFlowMapper cashFlowMapper;
 
     @Autowired
-    DesignerMapper designerMappere;
+    DesignerMapper designerMapper;
 
+    // 应该无用
     public Response addCashFlow(CashFlow cashFlow, String typeName){
         int type = DataDef.getCashFlag(typeName);
         if(type == 0) return new Response(false, "操作失败，没有指定操作类型");
@@ -45,7 +45,7 @@ public class CashFlowService {
         int aid = cashFlow.getAid(); // 拿aid是为了要对设计师表进行修改
         SearchArg searchArg = new SearchArg();
         searchArg.setAid(aid);
-        Designer designer = designerMappere.getDesigner(searchArg);
+        Designer designer = designerMapper.getDesigner(searchArg);
         if(designer == null) return new Response(false); // 如果拿不到设计师信息，说明是数据库读取出错
 
         if(type == DataDef.CashFlag.INCOME){
@@ -55,7 +55,7 @@ public class CashFlowService {
             data.setAid(aid);
             data.setBalance(balance);
             data.setTotalPrice(totalPrice);
-            int rt = designerMappere.setDesigner(data);
+            int rt = designerMapper.setDesigner(data);
             if(rt == 0) return new Response(false);
             return new Response(true);
         }
@@ -64,13 +64,39 @@ public class CashFlowService {
             Designer data = new Designer();
             data.setAid(aid);
             data.setBalance(balance);
-            int rt = designerMappere.setDesigner(data);
+            int rt = designerMapper.setDesigner(data);
             if(rt == 0) return new Response(false);
             return new Response(true);
         }
 
         return new Response(false);
     }
+
+    public Response getCashFlowShowList(SearchArg searchArg){
+        List<Designer> designerList = designerMapper.getDesignerList(new SearchArg());
+        ResParam designerParam = new ResParam();
+        for(Designer item: designerList){
+            designerParam.put(String.valueOf(item.getAid()), item.getNickName());
+        }
+//        searchArg.setType(DataDef.CashFlag.WITHDRAW);
+        // 结果按时间降序排序
+        searchArg.setCompColumns("time", true);
+        // 这个拿到的会是单纯的现金流表的数据
+        List<CashFlow> cashFlowList = cashFlowMapper.getCashFlowList(searchArg);
+        // 这个是最终返回的数据集
+        List<ResParam> list = new ArrayList<>();
+
+        for(CashFlow item: cashFlowList){
+            ResParam resParam = new ResParam();
+            CommTool.mergeResParam(resParam, item);
+            resParam.put("nickName", designerParam.get(item.getAid()+""));
+            list.add(resParam);
+         }
+        Response response = new Response(true, "获取提现数据~");
+        response.setData(new ResParam("list", list));
+        return response;
+    }
+
 
     //=====基础增删改查=====
 

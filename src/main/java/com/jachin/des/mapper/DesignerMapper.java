@@ -1,7 +1,6 @@
 package com.jachin.des.mapper;
 
 import com.jachin.des.entity.Designer;
-import com.jachin.des.entity.DesignerAudit;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.mapper.provider.DesignerSql;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,7 +18,7 @@ public interface DesignerMapper {
     public Designer getDesigner(SearchArg searchArg);
 
     @SelectProvider(type = DesignerSql.class, method = "getDesignerList")
-    public List<DesignerAudit> getDesignerList(SearchArg searchArg);
+    public List<Designer> getDesignerList(SearchArg searchArg);
 
     @UpdateProvider(type = DesignerSql.class, method = "addDesigner")
     public int addDesigner(Designer designer);
