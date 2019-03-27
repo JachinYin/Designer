@@ -31,8 +31,8 @@ public class TemplateSql {
 
         if(aid>0) sql = String.format("%s AND aid=%d", sql, aid);
         if(tempId>0) sql = String.format("%s AND tempId=%d", sql, tempId);
-        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>%s", sql, begTime);
-        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<%s", sql, endTime);
+        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>'%s'", sql, begTime);
+        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<'%s'", sql, endTime);
         if(CommTool.isNotBlank(title)) sql += " AND title LIKE '%"+ title +"%'";
         if(CommTool.isNotBlank(columns)){
             if(comp) sql = String.format("%s ORDER BY %s DESC;", sql, columns);

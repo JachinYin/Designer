@@ -40,8 +40,8 @@ public class DesignerAuditSql {
 
         if(aid>0) sql = String.format("%s AND aid=%d", sql, aid);
         if(status>0) sql = String.format("%s AND status=%d", sql, status);
-        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>%s", sql, begTime);
-        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<%s", sql, endTime);
+        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>'%s'", sql, begTime);
+        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<'%s'", sql, endTime);
         if(CommTool.isNotBlank(nickName)) sql += " AND nickName LIKE '%"+ nickName +"%'";
         if(CommTool.isNotBlank(columns)){
             if(comp) sql = String.format("%s ORDER BY %s DESC;", sql, columns);

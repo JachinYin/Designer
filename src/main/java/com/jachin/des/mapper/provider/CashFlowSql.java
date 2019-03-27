@@ -33,8 +33,8 @@ public class CashFlowSql {
         if(tempId>0) sql = String.format("%s AND tempId=%d", sql, tempId);
         if(type>0) sql = String.format("%s AND type=%d", sql, type);
 
-        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>%s", sql, begTime);
-        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<%s", sql, endTime);
+        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>'%s'", sql, begTime);
+        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<'%s'", sql, endTime);
         if(CommTool.isNotBlank(columns)){
             if(comp) sql = String.format("%s ORDER BY %s DESC;", sql, columns);
             else sql = String.format("%s ORDER BY %s ASC;", sql, columns);
