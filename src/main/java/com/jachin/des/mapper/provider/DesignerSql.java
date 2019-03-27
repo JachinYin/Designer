@@ -82,6 +82,10 @@ public class DesignerSql extends SQL {
             if(status > 0) SET("status=#{status}");
             if(balance > 0) SET("balance=#{balance}");
             if(totalPrice > 0) SET("totalPrice=#{totalPrice}");
+            if(balance < 0) {
+                designer.setBalance(0);
+                SET("balance=#{balance}");
+            }
 
             if (CommTool.isNotBlank(nickName)) SET("nickName=#{nickName}");
             if (CommTool.isNotBlank(intro)) SET("intro=#{intro}");
