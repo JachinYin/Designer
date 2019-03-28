@@ -1,6 +1,7 @@
 package com.jachin.des.service;
 
 import com.jachin.des.entity.*;
+import com.jachin.des.mapper.CashFlowMapper;
 import com.jachin.des.mapper.DesignerAuditMapper;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.provider.DesignerSql;
@@ -10,6 +11,7 @@ import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +27,50 @@ public class DesignerService {
     @Autowired
     DesignerAuditMapper designerAuditMapper;
 
+    @Autowired
+    CashFlowMapper cashFlowMapper;
+
     DesignerSql designerSql = new DesignerSql();
+
+    private int getWithdrawCount(int aid, List<CashFlow> list){
+        int sum = 0;
+        for (CashFlow item : list) {
+            if(item.getAid() == aid){
+                sum += item.getPrice();
+            }
+        }
+        return sum;
+    }
+    // 获取分佣管理中的数据
+    public Response getCashDesList(SearchArg searchArg) {
+        searchArg.setCompColumns("totalPrice", true);
+
+
+        // 拿到设计师所有的信息
+        List<Designer> designerList = designerMapper.getDesignerList(searchArg);
+
+        // 拿所有设计师的提现记录
+        SearchArg cashSearchArg = new SearchArg();
+        cashSearchArg.setType(DataDef.CashFlag.WITHDRAW);
+        List<CashFlow> cashFlowList = cashFlowMapper.getCashFlowList(cashSearchArg);
+
+        // 格式化成需要展示的数据
+        List<ResParam> showList = new ArrayList<>();
+        for (Designer item : designerList) {
+            ResParam newItem = new ResParam();
+            newItem.put("aid", item.getAid());
+            newItem.put("nickName", item.getNickName());
+            newItem.put("totalPrice", item.getTotalPrice());
+            newItem.put("balance", item.getBalance());
+            newItem.put("withdraw", getWithdrawCount(item.getAid(), cashFlowList));
+            showList.add(newItem);
+        }
+
+        Response response = new Response(true, "获取分佣列表数据");
+        response.setData(new ResParam("list", showList));
+        return response;
+    }
+
 
     // =====基础服务=====
     public Response getDesigner(SearchArg searchArg){

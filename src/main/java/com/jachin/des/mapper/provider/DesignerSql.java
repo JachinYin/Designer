@@ -20,29 +20,16 @@ public class DesignerSql extends SQL {
 
     // 获取查询designer的Sql
     public String getDesignerList(SearchArg searchArg) {
-        String sql;
-        boolean distinct = searchArg.isDistinct();
-        if(distinct) {
-            sql = String.format("SELECT * FROM `%s` AS x " +
-                    "WHERE time IN " +
-                    "(SELECT MAX(time) FROM `%s` AS y " +
-                    "WHERE x.aid = y.aid)", TableDef.DESIGNER_AUDIT, TableDef.DESIGNER_AUDIT);
-        }else {
-            sql = String.format("SELECT * FROM `%s` WHERE aid>0", TableDef.DESIGNER_AUDIT);
-        }
+        String sql = String.format("SELECT * FROM `%s` WHERE aid>0", TableDef.DESIGNER);
 
         int aid = searchArg.getAid();
         int status = searchArg.getStatus();
         String nickName = searchArg.getNickName();
-        String begTime = searchArg.getBegTime();
-        String endTime = searchArg.getEndTime();
         String columns = searchArg.getColumns();
         boolean comp = searchArg.isComp();
 
         if(aid>0) sql = String.format("%s AND aid=%d", sql, aid);
         if(status>0) sql = String.format("%s AND status=%d", sql, status);
-        if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>'%s'", sql, begTime);
-        if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<'%s'", sql, endTime);
         if(CommTool.isNotBlank(nickName)) sql += " AND nickName LIKE '%"+ nickName +"%'";
         if(CommTool.isNotBlank(columns)){
             if(comp) sql = String.format("%s ORDER BY %s DESC;", sql, columns);
