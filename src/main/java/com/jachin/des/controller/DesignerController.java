@@ -21,6 +21,12 @@ public class DesignerController {
     @Autowired
     DesignerAuditService designerAuditService;
 
+    // 分佣管理
+    @GetMapping("/getCashDesList")
+    public Response getCashDesList(SearchArg searchArg){
+        return designerService.getCashDesList(searchArg);
+    }
+
     // 获取设计师审核列表
     @GetMapping("/getDesignerAuditList")
     public Response getDesignerList(SearchArg searchArg){
