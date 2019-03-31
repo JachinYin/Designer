@@ -1,8 +1,7 @@
 package com.jachin.des;
 
-import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.SearchArg;
-import com.jachin.des.mapper.provider.DesignerSql;
+import com.jachin.des.mapper.provider.SqlUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,11 +16,8 @@ public class DesApplicationTests {
         SearchArg searchArg = new SearchArg();
         searchArg.setAid(1);
 
-        Designer designer = new Designer();
-        designer.setAid(1);
-
-        DesignerSql designerSql = new DesignerSql();
-        System.out.println(designerSql.addDesigner(designer));
+        String user = SqlUtils.userSql.getUser(searchArg);
+        System.out.println(user);
     }
 
 }

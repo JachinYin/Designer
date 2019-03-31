@@ -1,7 +1,5 @@
 package com.jachin.des.util;
 
-import com.jachin.des.web.WebDesigner;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -162,7 +160,7 @@ public class JacParam extends HashMap {
                 jacParam.setObject(key, val);
             }
         }catch (Exception e){
-            return WebDesigner.getRetParam(false, "解析失败").setString("jsonStr", json);
+            return new JacParam().setBoolean("success", false).setString("msg", "解析异常。");
         }
         return jacParam;
     }
