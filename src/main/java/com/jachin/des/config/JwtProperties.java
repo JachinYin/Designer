@@ -15,14 +15,14 @@ public class JwtProperties {
      */
     private String secret = "B9C54768DFD44C37982687C28636BF51";
 
-    private long expiration = 15 * 60L;
-//    private long expiration = 7 * 24 * 60 * 60L;
+//    private long expiration = 15 * 60L;
+    private long expiration = 7 * 24 * 60 * 60L;
 
     private String authPath = "login";
 
     private String md5Key = "SecretKey";
 
-    private String ignoreUrl = "/login,/register,/img";
+    private String ignoreUrl = "/login,/register,/img,/logout";
 
     public String getHeader() {
         return header;

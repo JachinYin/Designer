@@ -32,6 +32,7 @@ public class DesignerService {
 
     DesignerSql designerSql = new DesignerSql();
 
+    // 获取某个用户的取现总数
     private int getWithdrawCount(int aid, List<CashFlow> list){
         int sum = 0;
         for (CashFlow item : list) {
@@ -41,10 +42,10 @@ public class DesignerService {
         }
         return sum;
     }
+
     // 获取分佣管理中的数据
     public Response getCashDesList(SearchArg searchArg) {
         searchArg.setCompColumns("totalPrice", true);
-
 
         // 拿到设计师所有的信息
         List<Designer> designerList = designerMapper.getDesignerList(searchArg);

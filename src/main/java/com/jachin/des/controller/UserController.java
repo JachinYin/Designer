@@ -1,21 +1,19 @@
 package com.jachin.des.controller;
 
+import com.jachin.des.entity.SearchArg;
+import com.jachin.des.entity.User;
+import com.jachin.des.service.UserService;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
-import com.jachin.des.web.WebDesigner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ui.Model;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Random;
 
 /**
  * @author Jachin
@@ -25,79 +23,37 @@ import java.util.Random;
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
+    @Autowired
+    UserService userService;
 
-    @GetMapping("/login")
-    public Response login(
-            @RequestParam(value = "name",required = false)String name,
-            @RequestParam(value = "password", required = false) String password,
-            @RequestParam(value = "rememberMe", required = false) Boolean rememberMe,
-            HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse
-    ){
-        Response response;
+    @PostMapping("/login")
+    public Response login(SearchArg searchArg, HttpServletResponse httpResponse){
+        // 用户登陆
+        Response response = userService.userLogin(searchArg);
+        if(!response.isSuccess()) return new Response(false,response.getMsg());
 
-        if(WebDesigner.checkLogin(httpRequest)){
-            return new Response(true, "登陆成功");
-        }
+        // 验证通过，获取token写入Cookie
+        ResParam data = (ResParam) response.getData();
+        String token = (String) data.get("TOKEN");
 
-        if(!getUser().equals(name))
-            return new Response(false, "用户名错误");
-
-        if(!getPwd().equals(password))
-            return new Response(false, "密码错误");
-        int i = new Random().nextInt(1000);
-        Cookie t_cookie = new Cookie("TOKEN", "FAISCO" +i);
-        Cookie n_cookie = new Cookie("name", name);
-        t_cookie.setMaxAge(15 * 60);
-        n_cookie.setMaxAge(15 * 60);
-//        t_cookie.setSecure(true);
+        Cookie t_cookie = new Cookie("TOKEN", token);
         httpResponse.addCookie(t_cookie);
-        httpResponse.addCookie(n_cookie);
-        httpRequest.getSession().setAttribute("U_SESSION", name);
-        response = new Response(true, "登陆成功");
-        ResParam resParam = new ResParam();
-        resParam.put("TOKEN", "FAISCO");
-        resParam.put("name", name);
-        response.setData(resParam);
+
+        response.setData(new ResParam("TOKEN", token));
         return response;
     }
 
-    @GetMapping("/loginValidate")
-    public Response loginValidate(
-            @RequestParam(value = "name",required = false)String name,
-            @RequestParam(value = "password", required = false) String password,
-            Model model
-    ){
-        Response response;
-        if (!getUser().equals(name)) {
-            response = new Response(false, "用户不存在");
-            return response;
-        }
-        if (!getPwd().equals(password)) {
-            response = new Response(false, "密码错误");
-            return response;
-        }
-        model.addAttribute("name", name);
-        response = new Response(true, "验证通过");
-        return response;
+    @GetMapping("/register")
+    public Response register(User user){
+        return userService.userRegister(user);
     }
 
     @GetMapping("/logout")
-    public String logout(Model model
-    ){
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        // 用户注销
-//        request.getSession().removeAttribute("U_SESSION"); // 删除SESSION 属性（不推荐）
-        request.getSession().invalidate(); // 消除整个session（推荐）
-        return "redirect:login";
+    public Response logout(HttpServletResponse httpResponse){
+        Cookie t_cookie = new Cookie("TOKEN", "");
+        t_cookie.setMaxAge(0);
+        httpResponse.addCookie(t_cookie);
+        return new Response(true);
     }
 
-
-
-    private String getUser(){
-        return "jachin";
-    }
-    private String getPwd(){
-        return "123123";
-    }
 }

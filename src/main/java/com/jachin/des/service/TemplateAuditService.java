@@ -259,7 +259,7 @@ public class TemplateAuditService {
     }
 
     /**
-     * 添加模板审核记录
+     * 前台添加模板审核记录
      */
     public Response addTemplateAudit(TemplateAudit templateAudit){
         if(templateAudit.getTempId() < 1) return new Response(false, "操作失败，模板ID错误");
@@ -269,7 +269,11 @@ public class TemplateAuditService {
             SearchArg searchArg = new SearchArg();
             searchArg.setAid(templateAudit.getAid());
             // 如果设计师名字为空，则要根据 aid 去拿名字，然后存入templateAudit对象中
-            String nickName = designerMapper.getDesigner(searchArg).getNickName();
+            Designer designer = designerMapper.getDesigner(searchArg);
+            if(designer == null) return new Response(false,"目前不可提交审核。");
+            if(designer.getStatus() != DataDef.DesignerStatus.PASS)
+                return new Response(false,"目前不可提交审核。");
+            String nickName = designer.getNickName();
             templateAudit.setDesigner(nickName);
         }
 

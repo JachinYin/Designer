@@ -1,11 +1,10 @@
 package com.jachin.des.config;
 
-import com.jachin.des.interceptor.LoginInterceptor;
+import com.jachin.des.filter.AuthFilter;
 import com.jachin.des.util.CommTool;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -19,12 +18,12 @@ import javax.servlet.MultipartConfigElement;
 @Configuration
 //public class WebAppConfig implements WebMvcConfigurer {
 public class WebAppConfig extends WebMvcConfigurerAdapter implements WebMvcConfigurer {
-    @Override
-    public void addInterceptors(InterceptorRegistry registry){
-        // 注册拦截器
-        registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**");
-    }
 
+    @Bean
+//    @ConditionalOnProperty(prefix = "rest", name = "auth-open", havingValue = "true", matchIfMissing = true)
+    public AuthFilter jwtAuthenticationTokenFilter() {
+        return new AuthFilter();
+    }
 
     @Bean
     public MultipartConfigElement multipartConfigElement(){
@@ -45,7 +44,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter implements WebMvcConfi
         String os = System.getProperty("os.name");
 
         if (os.toLowerCase().startsWith("win")) {  //如果是Windows系统
-            registry.addResourceHandler("/Img/**")
+            registry.addResourceHandler("/img/**")
                     // /apple/**表示在磁盘apple目录下的所有资源会被解析为以下的路径
                     .addResourceLocations("file:" + CommTool.imgUrl + "/") //媒体资源
                     .addResourceLocations("classpath:/META-INF/resources/");  //swagger2页面

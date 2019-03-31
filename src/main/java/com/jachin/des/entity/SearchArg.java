@@ -17,6 +17,10 @@ public class SearchArg {
     private String endTime;
     private String nickName;
 
+    private String userName;
+    private String password;
+    private String token;
+
     private boolean distinct;     // 是否去重
     private String columns;       // 排序列
     private boolean comp;         // 是否规则
@@ -102,6 +106,30 @@ public class SearchArg {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public boolean isDistinct() {

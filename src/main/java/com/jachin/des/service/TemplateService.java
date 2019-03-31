@@ -6,8 +6,10 @@ import com.jachin.des.entity.Template;
 import com.jachin.des.entity.TemplateAudit;
 import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.mapper.TemplateMapper;
+import com.jachin.des.mapper.provider.SqlUtils;
 import com.jachin.des.mapper.provider.TemplateSql;
 import com.jachin.des.util.CommTool;
+import com.jachin.des.util.CurrentUser;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.slf4j.Logger;
@@ -43,7 +45,7 @@ public class TemplateService {
     public Response uploadImg(MultipartFile file, HttpServletRequest request){
         try {
             //目前这里是写死的本地硬盘路径
-            String path = CommTool.imgUrl + "/Template";
+            String path = CommTool.imgUrl + "/Template/";
             //获取文件名称
             String fileName = file.getOriginalFilename();
             //获取文件名后缀
@@ -98,14 +100,16 @@ public class TemplateService {
      * 根据条件获取模板列表
      */
     public Response getTemplateList(SearchArg searchArg){
-        int aid = searchArg.getAid();
+        int aid = CurrentUser.getCurrentAid();
         if(aid < 1){
             return new Response(false, "获取模板列表失败，aid错误");
         }
         Response response = new Response(true, "获取列表成功");
+        searchArg.setAid(aid);
         List<Template> templateList = templateMapper.getTemplateList(searchArg);
         ResParam resParam = new ResParam();
         resParam.put("list",templateList);
+        resParam.put("sql",SqlUtils.templateSql.getTemplateList(searchArg));
         response.setData(resParam);
         return response;
     }
@@ -155,13 +159,14 @@ public class TemplateService {
      * 添加模板
      */
     public Response addTemplate(Template template){
-        Response response = new Response(true, "创建成功");
+        int aid = CurrentUser.getCurrentAid();
+        if(aid < 1) return new Response(false, "创建失败，账户ID错误");
 
-        if(template.getAid() < 1) return new Response(false, "创建失败，账户ID错误");
+        template.setAid(aid);
         int rt = templateMapper.addTemplate(template);
-
         if(rt  == 0) return new Response(false, "创建失败(TemplateService error)");
 
+        Response response = new Response(true, "创建成功");
         ResParam resParam = new ResParam();
         resParam.put("sql", sql.addTemplate(template));
         response.setData(resParam);

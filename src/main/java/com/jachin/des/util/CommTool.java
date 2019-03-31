@@ -15,8 +15,8 @@ import java.util.Date;
  */
 public class CommTool {
 
-//    public static final String imgUrl = "E:/Code/Graduation/Designer/Img";
-    public static final String imgUrl = "D:/Jachin/Graduation/Code/Designer/Img";
+    public static final String imgUrl = "E:/Code/Graduation/Designer/Img";
+//    public static final String imgUrl = "D:/Jachin/Graduation/Code/Designer/Img";
 //    public static
     public static Logger getLogger(Class classz){
         return LoggerFactory.getLogger(classz);

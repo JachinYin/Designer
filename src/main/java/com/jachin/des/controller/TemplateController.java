@@ -33,6 +33,7 @@ public class TemplateController {
 
 
 
+    // 前台获取模板列表数据
     @GetMapping("/getTemplateList")
     public Response getTemplateList(SearchArg searchArg){
         return templateService.getTemplateList(searchArg);
