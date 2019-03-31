@@ -17,7 +17,20 @@ public class UserSql {
 
     public String getUser(SearchArg searchArg){
         int aid = searchArg.getAid();
-        return String.format("SELECT * FROM `%s` WHERE aid=%d", TableDef.USER, aid);
+        String userName = searchArg.getUserName();
+        String password = searchArg.getPassword();
+        String token = searchArg.getToken();
+        return new SQL(){{
+            SELECT("*");
+            FROM(TableDef.USER);
+
+            if(aid > 0) WHERE("aid=#{aid}");
+            if(CommTool.isNotBlank(userName)) WHERE("userName=#{userName}");
+            if(CommTool.isNotBlank(password)) WHERE("password=#{password}");
+            if(CommTool.isNotBlank(token)) WHERE("token=#{token}");
+
+        }}.toString();
+//        return String.format("SELECT * FROM `%s` WHERE aid=%d", TableDef.USER, aid);
     }
 
     public String setUser(User user){
@@ -40,7 +53,6 @@ public class UserSql {
     }
 
     public String addUser(User user){
-        int aid = user.getAid(); //AID在插入后只读
         String userName = user.getUserName();
         String password = user.getPassword();
         String token = user.getToken();
@@ -49,7 +61,6 @@ public class UserSql {
 
         return new SQL() {{
             INSERT_INTO(TableDef.USER);
-            SET("aid=#{aid}");
             SET("time=#{time}");
             if (CommTool.isNotBlank(userName)) VALUES("userName", "#{userName}");
             if (CommTool.isNotBlank(password)) VALUES("password", "#{password}");

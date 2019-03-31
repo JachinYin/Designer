@@ -21,8 +21,9 @@ public interface UserMapper {
     public int setUser(User user);
 
     @InsertProvider(type = UserSql.class, method = "addUser")
+    @Options(useGeneratedKeys = true, keyProperty = "user.aid")
     public int addUser(User user);
 
     @DeleteProvider(type = UserSql.class, method = "delUser")
-    public int delUser(int tempId);
+    public int delUser(int aid);
 }
