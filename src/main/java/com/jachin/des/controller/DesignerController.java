@@ -35,7 +35,7 @@ public class DesignerController {
 
     // 根据 aid 获取设计师信息【用于设计师审核详情】
     @GetMapping("/getDesigner")
-    public Response getDesignerByAid(SearchArg searchArg){
+    public Response getDesigner(SearchArg searchArg){
         return designerService.getDesigner(searchArg);
     }
 }

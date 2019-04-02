@@ -6,6 +6,7 @@ import com.jachin.des.mapper.DesignerAuditMapper;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.provider.DesignerSql;
 import com.jachin.des.util.CommTool;
+import com.jachin.des.util.CurrentUser;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,9 @@ public class DesignerService {
     // =====基础服务=====
     public Response getDesigner(SearchArg searchArg){
         int aid = searchArg.getAid();
+        if(aid == -10){ // 设计师前台的方法
+            aid = CurrentUser.getCurrentAid();
+        }
         if(aid < 1){
             return new Response(false, "Aid错误");
         }
