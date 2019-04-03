@@ -38,4 +38,10 @@ public class DesignerController {
     public Response getDesigner(SearchArg searchArg){
         return designerService.getDesigner(searchArg);
     }
+
+    // 设计师前台获取方法
+    @GetMapping("/getDesignerInfo")
+    public Response getDesignerInfo(){
+        return designerService.getDesignerInfo();
+    }
 }

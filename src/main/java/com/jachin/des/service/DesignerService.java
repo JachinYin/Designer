@@ -73,13 +73,24 @@ public class DesignerService {
         return response;
     }
 
+    public Response getDesignerInfo(){
+        int aid = CurrentUser.getCurrentAid();
+        if(aid < 1) return new Response(false, "账户ID错误。");
+
+        SearchArg searchArg = new SearchArg();
+        searchArg.setAid(aid);
+        Designer designer = designerMapper.getDesigner(searchArg);
+        if (designer == null) return new Response(false, "获取信息失败。");
+
+        Response response = new Response(true, "获取信息成功");
+        response.setData(new ResParam("desData", designer));
+        return response;
+    }
+
 
     // =====基础服务=====
     public Response getDesigner(SearchArg searchArg){
         int aid = searchArg.getAid();
-        if(aid == -10){ // 设计师前台的方法
-            aid = CurrentUser.getCurrentAid();
-        }
         if(aid < 1){
             return new Response(false, "Aid错误");
         }
