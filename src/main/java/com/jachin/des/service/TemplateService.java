@@ -65,7 +65,7 @@ public class TemplateService {
                     return new Response(false, "上传失败！");
                 }
                 //项目url，这里可以使用常量或者去数据字典获取相应的url前缀；
-                String fileUrl= request.getContextPath() + "/img/Template" + fileName;
+                String fileUrl= request.getContextPath() + "/img/Template/" + fileName;
                 Response response = new Response(true, "上传成功");
                 ResParam resParam = new ResParam("fileUrl", fileUrl);
 
