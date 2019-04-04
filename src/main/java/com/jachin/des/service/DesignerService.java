@@ -129,15 +129,19 @@ public class DesignerService {
      * 根据账户Id更新设计师信息
      */
     public Response setDesigner(Designer designer){
-
-        if(designer.getAid() < 1){
+        int aid = designer.getAid();
+        if (aid == 0){
+            aid = CurrentUser.getCurrentAid();
+            designer.setAid(aid);
+        }
+        if(aid < 1){
             return new Response(false, "操作失败，账户ID错误。");
         }
 
         Response response = new Response(true, "更新成功");
 
         int rt = designerMapper.setDesigner(designer);
-        if(rt == 0) return new Response(false, "更新失败,code=1。");
+        if(rt == 0) return new Response(false, "更新失败。");
 
         ResParam resParam = new ResParam();
         resParam.put("sql", designerSql.setDesigner(designer));
