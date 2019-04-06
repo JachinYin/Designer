@@ -51,7 +51,7 @@ public class DesignerService {
     // 获取分佣管理中的数据
     public Response getCashDesList(SearchArg searchArg) {
         searchArg.setCompColumns("totalPrice", true);
-
+        searchArg.setStatus(DataDef.DesignerStatus.PASS);   // 只查看通过的设计师
         // 拿到设计师所有的信息
         List<Designer> designerList = designerMapper.getDesignerList(searchArg);
 
@@ -77,19 +77,20 @@ public class DesignerService {
         return response;
     }
 
-    public Response getDesignerInfo(){
-
-
-        int aid = CurrentUser.getCurrentAid();
+    public Response getDesignerInfo(SearchArg searchArg){
+        int aid = searchArg.getAid();
+        if(aid < 1) {
+            aid = CurrentUser.getCurrentAid();
+            searchArg.setAid(aid);
+        }
         if(aid < 1) return new Response(false, "账户ID错误。");
 
-        SearchArg searchArg = new SearchArg();
-        searchArg.setAid(aid);
         Designer designer = designerMapper.getDesigner(searchArg);
         if (designer == null) return new Response(false, "获取信息失败。");
 
         Response response = new Response(true, "获取信息成功");
-        response.setData(new ResParam("desData", designer));
+        ResParam resParam = new ResParam("desData", designer);
+        response.setData(resParam);
         return response;
     }
 

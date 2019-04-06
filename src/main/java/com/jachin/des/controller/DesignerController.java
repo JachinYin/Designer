@@ -1,6 +1,7 @@
 package com.jachin.des.controller;
 
 import com.jachin.des.entity.Designer;
+import com.jachin.des.entity.SearchArg;
 import com.jachin.des.service.DesignerAuditService;
 import com.jachin.des.service.DesignerService;
 import com.jachin.des.util.CommTool;
@@ -27,8 +28,8 @@ public class DesignerController {
 
     // 设计师前台获取方法
     @GetMapping("/getDesignerInfo")
-    public Response getDesignerInfo(){
-        return designerService.getDesignerInfo();
+    public Response getDesignerInfo(SearchArg searchArg){
+        return designerService.getDesignerInfo(searchArg);
     }
     // 设计师前台保存方法
     @GetMapping("/setDesignerInfo")

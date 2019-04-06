@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = RuntimeException.class)
     @ResponseBody
     public Response defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
-//        logger.error("", e);
+        logger.error("", e);
         Response response = new Response();
         if (e instanceof org.springframework.web.servlet.NoHandlerFoundException) {
             response.setCode(404);
