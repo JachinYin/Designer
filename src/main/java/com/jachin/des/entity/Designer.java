@@ -1,5 +1,11 @@
 package com.jachin.des.entity;
 
+import com.jachin.des.def.RegDef;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 /**
  * 设计师表
  * @author Jachin
@@ -7,20 +13,27 @@ package com.jachin.des.entity;
  */
 public class Designer implements AEntity{
     // 22项
+    @Min(0)
     private int aid;            // 账户ID
     private int status;         // 状态
+    @Min(0)
     private int balance;        // 余额
+    @Min(0)
     private int totalPrice;     // 总收入
     private String nickName;    // 昵称
     private String intro;       // 简介
+    @Pattern(regexp = RegDef.idCardReg, message = RegDef.idCardInfo)
     private String idNum;       // 身份证号码
     private String realName;    // 真实姓名
     private String country;     // 国家1
     private String province;    // 省份
     private String city;        // 城市
+    @Pattern(regexp = RegDef.phoneReg, message = RegDef.phoneInfo)
     private String phone;       // 联系手机
+    @Email
     private String email;       // 邮箱
     private String weChat;      // 微信号
+    @Pattern(regexp = RegDef.qqReg, message = RegDef.qqInfo)
     private String qq;          // QQ号
     private String address;     // 地址
     private String bankAcct;    // 银行账号

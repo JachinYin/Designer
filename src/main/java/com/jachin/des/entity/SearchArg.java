@@ -161,4 +161,26 @@ public class SearchArg {
         this.columns = column;
         this.comp = desc;
     }
+
+    @Override
+    public String toString() {
+        return "SearchArg{" +
+                "id=" + id +
+                ", aid=" + aid +
+                ", tempId=" + tempId +
+                ", status=" + status +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", designer='" + designer + '\'' +
+                ", begTime='" + begTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", token='" + token + '\'' +
+                ", distinct=" + distinct +
+                ", columns='" + columns + '\'' +
+                ", comp=" + comp +
+                '}';
+    }
 }

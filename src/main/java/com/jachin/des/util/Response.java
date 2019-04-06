@@ -8,6 +8,7 @@ import java.util.HashMap;
  */
 public class Response {
     private boolean success;
+    private int code;
     private String msg;
     private HashMap<String, Object> data;
 
@@ -50,5 +51,13 @@ public class Response {
 
     public void setData(HashMap<String, Object> data) {
         this.data = data;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }
