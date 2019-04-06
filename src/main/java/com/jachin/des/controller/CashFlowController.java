@@ -18,14 +18,23 @@ public class CashFlowController {
     @Autowired
     CashFlowService cashFlowService;
 
-    @GetMapping("/withDraw")
+    // 提现
+    @GetMapping("/withdraw")
     public Response withdrawCash(CashFlow cashFlow){
-        return cashFlowService.addCashFlow(cashFlow);
+        return cashFlowService.withdraw(cashFlow);
     }
 
+    // 获取现金流列表
     @GetMapping("/getCashFlowShowList")
     public Response getCashFlowShowList(SearchArg searchArg){
         return cashFlowService.getCashFlowShowList(searchArg);
+    }
+
+
+    // 设计师前台，获取账户明细数据
+    @GetMapping("/getCashData")
+    public Response getCashData(){
+        return cashFlowService.getCashData();
     }
 
     // ========

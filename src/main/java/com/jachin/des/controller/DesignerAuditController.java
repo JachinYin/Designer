@@ -1,5 +1,6 @@
 package com.jachin.des.controller;
 
+import com.jachin.des.entity.DesignerAudit;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.service.DesignerAuditService;
 import com.jachin.des.service.DesignerService;
@@ -28,9 +29,9 @@ public class DesignerAuditController {
     }
 
     // 获取设计师审核列表
-    @GetMapping("/getDesignerAuditList")
-    public Response getDesignerList(SearchArg searchArg){
-        return designerAuditService.getDesignerAuditList(searchArg);
+    @GetMapping("/getDesignersAuditList")
+    public Response getDesignersList(SearchArg searchArg){
+        return designerAuditService.getDesignersAuditList(searchArg);
     }
 
     // 根据 aid 获取设计师信息【用于设计师审核详情】
@@ -39,6 +40,17 @@ public class DesignerAuditController {
         return designerService.getDesigner(searchArg);
     }
 
-    //
+    // 设计师前台获取设计师审核记录
+    @GetMapping("/getDesignerAuditList")
+    public Response getDesignerList(SearchArg searchArg){
+        return designerAuditService.getDesignerAuditList(searchArg);
+    }
+
+    // 设计师前台，提交审核
+    @GetMapping("/addDesignerAudit")
+    public Response addDesignerAudit(DesignerAudit designerAudit){
+        return designerAuditService.addDesignerAudit(designerAudit);
+    }
+
 
 }
