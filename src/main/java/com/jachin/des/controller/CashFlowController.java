@@ -24,12 +24,17 @@ public class CashFlowController {
         return cashFlowService.withdraw(cashFlow);
     }
 
-    // 获取现金流列表
+    // 后台获取现金流列表
     @GetMapping("/getCashFlowShowList")
     public Response getCashFlowShowList(SearchArg searchArg){
         return cashFlowService.getCashFlowShowList(searchArg);
     }
 
+    // 后台获取分佣管理详细数据
+    @GetMapping("/getCashDetail")
+    public Response getCashDetail(SearchArg searchArg){
+        return cashFlowService.getCashDetail(searchArg);
+    }
 
     // 设计师前台，获取账户明细数据
     @GetMapping("/getCashData")

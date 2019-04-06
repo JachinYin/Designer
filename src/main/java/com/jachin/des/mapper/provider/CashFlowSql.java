@@ -1,5 +1,6 @@
 package com.jachin.des.mapper.provider;
 
+import com.jachin.des.def.DataDef;
 import com.jachin.des.entity.CashFlow;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.util.CommTool;
@@ -11,6 +12,29 @@ import org.apache.ibatis.jdbc.SQL;
  */
 public class CashFlowSql {
 
+    // 获取指定aid的模板收入记录(后台分佣管理使用)
+    public String getCashFlowWithTempTitle(SearchArg searchArg){
+        int aid = searchArg.getAid();
+        String sql = String.format("SELECT c.tempId,c.time,c.price,t.title FROM %s AS c JOIN %s AS t", TableDef.CASH_FLOW, TableDef.TEMPLATE);
+        sql = String.format("%s ON c.tempId = t.tempId", sql);
+        sql = String.format("%s WHERE type!=%d", sql, DataDef.CashFlag.WITHDRAW);
+        sql = String.format("%s AND c.aid=%d", sql, aid);
+        sql = String.format("%s ORDER BY c.time DESC;", sql);
+
+        return sql;
+    }
+
+    // 获取提现总额
+    public String getSumWithdraw(SearchArg searchArg){
+        int aid = searchArg.getAid();
+        int type = searchArg.getType();
+
+        String sql = String.format("SELECT SUM(price) FROM %s WHERE price!=0", TableDef.CASH_FLOW);
+        if(aid > 0) sql = String.format("%s AND aid=%d", sql, aid);
+        if(type > 0) sql = String.format("%s AND type=%d", sql, type);
+        return sql;
+    }
+
     // =====基础查改增删=====
     public String getCashFlow(SearchArg searchArg) {
         return String.format("SELECT * FROM `%s` WHERE id=%d", TableDef.CASH_FLOW, searchArg.getId());
@@ -21,6 +45,7 @@ public class CashFlowSql {
         int aid = searchArg.getAid();
         int tempId = searchArg.getTempId();
         int type = searchArg.getType();
+        String extra = searchArg.getExtra();
         String begTime = searchArg.getBegTime();
         String endTime = searchArg.getEndTime();
 
@@ -32,9 +57,9 @@ public class CashFlowSql {
         if(aid>0) sql = String.format("%s AND aid=%d", sql, aid);
         if(tempId>0) sql = String.format("%s AND tempId=%d", sql, tempId);
         if(type>0) sql = String.format("%s AND type=%d", sql, type);
-
         if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>'%s'", sql, begTime);
         if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<'%s'", sql, endTime);
+        if(CommTool.isNotBlank(extra)) sql = String.format("%s %s", sql, extra);
         if(CommTool.isNotBlank(columns)){
             if(comp) sql = String.format("%s ORDER BY %s DESC;", sql, columns);
             else sql = String.format("%s ORDER BY %s ASC;", sql, columns);

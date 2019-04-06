@@ -106,6 +106,54 @@ public class CashFlowService {
         return response;
     }
 
+    // 设计师后台获取分佣管理详情信息
+    @Transactional
+    public Response getCashDetail(SearchArg searchArg){
+        int aid = searchArg.getAid();
+        if(aid < 1) return new Response(false, "账户ID错误。");
+
+        // 获取设计师信息
+        Designer designer = designerMapper.getDesigner(searchArg);
+        if (designer == null) return new Response(false, "获取信息失败。");
+
+        Response response = new Response(true, "获取信息成功");
+        ResParam resParam = new ResParam();
+        // 获取提现总数目
+        searchArg.setType(DataDef.CashFlag.WITHDRAW);
+        Integer sumWithdraw = cashFlowMapper.getSumWithdraw(searchArg);
+        ResParam temp = new ResParam();
+        temp.put("totalWithdraw", sumWithdraw == null ? 0:sumWithdraw);
+        CommTool.mergeResParam(temp, designer);
+        resParam.put("desData", temp);
+
+        // 获取提现记录
+//        searchArg.setType(DataDef.CashFlag.WITHDRAW);
+        searchArg.setCompColumns("time", true);
+        List<CashFlow> cashRecList = cashFlowMapper.getCashFlowList(searchArg);
+        resParam.put("cashRecList", cashRecList);
+        // 获取模板收入记录
+        /*searchArg.setType(0); // 清空模板，使用自定义字符串
+        searchArg.setExtra(String.format("AND type IN (%d, %d)", DataDef.CashFlag.INCOME, DataDef.CashFlag.DELTA_PRICE));
+        List<CashFlow> cashTempList = cashFlowMapper.getCashFlowList(searchArg);
+        List<Integer> tempIdList = new ArrayList<>();
+        for (CashFlow cashFlow : cashTempList) {
+            tempIdList.add(cashFlow.getTempId());
+        }
+        ResParam tempIdName = new ResParam();
+        List<Template> templateList = templateMapper.getTemplateList(searchArg);
+        for (Template template : templateList) {
+            if(tempIdList.contains(template.getTempId())){
+                tempIdName.put(String.valueOf(template.getTempId()), template.getTitle());
+            }
+        }*/
+        List<CashFlowWithTitle> cashTempList = cashFlowMapper.getCashFlowWithTempTitle(searchArg);
+
+        resParam.put("cashTempList", cashTempList);
+
+
+        response.setData(resParam);
+        return response;
+    }
 
     //=====基础增删改查=====
 
