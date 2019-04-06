@@ -1,6 +1,10 @@
 package com.jachin.des.service;
 
-import com.jachin.des.entity.*;
+import com.jachin.des.def.DataDef;
+import com.jachin.des.entity.CashFlow;
+import com.jachin.des.entity.Designer;
+import com.jachin.des.entity.DesignerAudit;
+import com.jachin.des.entity.SearchArg;
 import com.jachin.des.mapper.CashFlowMapper;
 import com.jachin.des.mapper.DesignerAuditMapper;
 import com.jachin.des.mapper.DesignerMapper;
@@ -74,6 +78,8 @@ public class DesignerService {
     }
 
     public Response getDesignerInfo(){
+
+
         int aid = CurrentUser.getCurrentAid();
         if(aid < 1) return new Response(false, "账户ID错误。");
 
@@ -143,6 +149,7 @@ public class DesignerService {
         int rt = designerMapper.setDesigner(designer);
         if(rt == 0) return new Response(false, "更新失败。");
 
+        System.out.println(designer);
         ResParam resParam = new ResParam();
         resParam.put("sql", designerSql.setDesigner(designer));
         response.setData(resParam);

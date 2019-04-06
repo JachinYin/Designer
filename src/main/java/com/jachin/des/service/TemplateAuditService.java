@@ -1,5 +1,6 @@
 package com.jachin.des.service;
 
+import com.jachin.des.def.DataDef;
 import com.jachin.des.entity.*;
 import com.jachin.des.mapper.CashFlowMapper;
 import com.jachin.des.mapper.DesignerMapper;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -75,6 +77,7 @@ public class TemplateAuditService {
     }
 
     // 执行审核逻辑的服务
+    @Transactional
     public Response doTemplateAudit(TemplateAudit templateAudit, String typeName){
         int type = DataDef.getTemplateStatus(typeName);
         if(type == 0) return new Response(false, "请求参数错误");
@@ -272,7 +275,7 @@ public class TemplateAuditService {
             Designer designer = designerMapper.getDesigner(searchArg);
             if(designer == null) return new Response(false,"目前不可提交审核。");
             if(designer.getStatus() != DataDef.DesignerStatus.PASS)
-                return new Response(false,"目前不可提交审核。");
+                return new Response(false,"您目前还不是认证设计师，暂时无法提交审核哦~");
             String nickName = designer.getNickName();
             templateAudit.setDesigner(nickName);
         }

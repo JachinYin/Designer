@@ -1,13 +1,17 @@
 package com.jachin.des.service;
 
+import com.jachin.des.def.DataDef;
 import com.jachin.des.entity.*;
 import com.jachin.des.mapper.CashFlowMapper;
 import com.jachin.des.mapper.DesignerMapper;
+import com.jachin.des.mapper.TemplateMapper;
 import com.jachin.des.util.CommTool;
+import com.jachin.des.util.CurrentUser;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,9 @@ public class CashFlowService {
 
     @Autowired
     DesignerMapper designerMapper;
+
+    @Autowired
+    TemplateMapper templateMapper;
 
     // 应该无用
     public Response addCashFlow(CashFlow cashFlow, String typeName){
@@ -72,17 +79,19 @@ public class CashFlowService {
         return new Response(false);
     }
 
+    // 设计师后台获取提现记录
     public Response getCashFlowShowList(SearchArg searchArg){
         List<Designer> designerList = designerMapper.getDesignerList(new SearchArg());
         ResParam designerParam = new ResParam();
         for(Designer item: designerList){
             designerParam.put(String.valueOf(item.getAid()), item.getNickName());
         }
-//        searchArg.setType(DataDef.CashFlag.WITHDRAW);
+        searchArg.setType(DataDef.CashFlag.WITHDRAW);
         // 结果按时间降序排序
         searchArg.setCompColumns("time", true);
         // 这个拿到的会是单纯的现金流表的数据
         List<CashFlow> cashFlowList = cashFlowMapper.getCashFlowList(searchArg);
+        System.out.println(searchArg);
         // 这个是最终返回的数据集
         List<ResParam> list = new ArrayList<>();
 
@@ -108,6 +117,7 @@ public class CashFlowService {
         return response;
     }
 
+    // 获取现金表记录
     public Response getCashFlowList(SearchArg searchArg) {
         Response response = new Response(true, "获取收入/提现表记录");
         List<CashFlow> list = cashFlowMapper.getCashFlowList(searchArg);
@@ -125,9 +135,38 @@ public class CashFlowService {
         return new Response(true);
     }
 
-    public Response addCashFlow(CashFlow cashFlow){
+    // 提现，插入现金表
+    @Transactional
+    public Response withdraw(CashFlow cashFlow){
+
+        int aid = CurrentUser.getCurrentAid();
+        int price = cashFlow.getPrice();
+        if(aid < 1) return new Response(false, "账户ID错误。");
+        if(price < 0) return new Response(false, "提现金额错误。");
+
+
+        // 获取设计师余额
+        SearchArg searchArg = new SearchArg();
+        searchArg.setAid(aid);
+        Designer designer = designerMapper.getDesigner(searchArg);
+        if(designer == null) return new Response(false, "获取余额失败，请稍后重试。");
+        int balance = designer.getBalance();
+        if(balance - price < 0) return new Response(false, "余额不足");
+
+        // 插入现金表
+        cashFlow.setAid(aid);
+        cashFlow.setType(DataDef.CashFlag.WITHDRAW);
+        cashFlow.setBalance(balance - price);
         int rt = cashFlowMapper.addCashFlow(cashFlow);
         if(rt == 0) return new Response(false);
+
+        // 修改设计师余额
+        Designer setDesigner = new Designer();
+        setDesigner.setAid(aid);
+        setDesigner.setBalance(balance - price == 0 ? -1 : balance-price);
+        rt = designerMapper.setDesigner(setDesigner);
+        if (rt==0) return new Response(false);
+
         return new Response(true);
     }
     
@@ -136,5 +175,42 @@ public class CashFlowService {
         int rt = cashFlowMapper.delCashFlow(searchArg);
         if(rt == 0) return new Response(false);
         return new Response(true);
+    }
+
+    // 设计师前台，获取账户明细数据
+    public Response getCashData() {
+        int aid = CurrentUser.getCurrentAid();
+        if(aid < 1) return new Response(false, "账户ID错误。");
+
+        SearchArg searchArg = new SearchArg();
+        searchArg.setAid(aid);
+        // 获取设计师信息，拿余额和总收入
+        Designer designer = designerMapper.getDesigner(searchArg);
+        if(designer == null) return new Response(false, "获取设计师信息失败。");
+        int balance = designer.getBalance();
+        int totalPrice = designer.getTotalPrice();
+
+        // 获取该设计师的现金记录
+        searchArg.setCompColumns("time", true);
+        List<CashFlow> cashFlowList = cashFlowMapper.getCashFlowList(searchArg);
+        if(cashFlowList == null) return new Response(false, "获取现金记录失败。");
+
+        // searchArg 设定了aid 和状态为 通过
+        searchArg.setStatus(DataDef.TemplateStatus.PASS);
+        // 那该设计师通过的模板数目
+        List<Template> templateList = templateMapper.getTemplateList(searchArg);
+        int passTemplate = 0;
+        if(templateList != null) passTemplate = templateList.size();
+
+        // 组合数据
+        ResParam resParam = new ResParam();
+        resParam.put("balance", balance);
+        resParam.put("totalPrice", totalPrice);
+        resParam.put("passTemplate", passTemplate);
+        resParam.put("cashFlowList", cashFlowList);
+
+        Response response = new Response(true, "获取账户明细数据");
+        response.setData(resParam);
+        return response;
     }
 }

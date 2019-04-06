@@ -1,10 +1,14 @@
 package com.jachin.des.service;
 
-import com.jachin.des.entity.DataDef;
+import com.jachin.des.def.DataDef;
+import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.DesignerAudit;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.mapper.DesignerAuditMapper;
+import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.provider.DesignerAuditSql;
+import com.jachin.des.util.CommTool;
+import com.jachin.des.util.CurrentUser;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,9 @@ import java.util.List;
  */
 @Service
 public class DesignerAuditService {
+
+    @Autowired
+    DesignerMapper designerMapper;
 
     @Autowired
     DesignerAuditMapper designerAuditMapper;
@@ -73,7 +80,7 @@ public class DesignerAuditService {
         return response;
     }
 
-    public Response getDesignerAuditList(SearchArg searchArg){
+    public Response getDesignersAuditList(SearchArg searchArg){
         searchArg.setCompColumns("time", true);
         List<DesignerAudit> list = designerAuditMapper.getDesignerAuditList(searchArg);
 
@@ -85,6 +92,17 @@ public class DesignerAuditService {
         return response;
     }
 
+    public Response getDesignerAuditList(SearchArg searchArg){
+        int aid = searchArg.getAid();
+        if(aid < 1) searchArg.setAid(CurrentUser.getCurrentAid());
+        searchArg.setCompColumns("time", true);
+        List<DesignerAudit> list = designerAuditMapper.getDesignerAuditList(searchArg);
+
+        Response response = new Response(true, "获取成功");
+        response.setData(new ResParam("list", list));
+        return response;
+    }
+
     public Response setDesignerAudit(DesignerAudit designerAudit){
         if(designerAudit.getId() == 0) return new Response(false, "操作失败，ID错误。");
         int rt = designerAuditMapper.setDesignerAudit(designerAudit);
@@ -93,12 +111,23 @@ public class DesignerAuditService {
     }
 
     public Response addDesignerAudit(DesignerAudit designerAudit){
+        int aid = designerAudit.getAid();
+        if(aid < 1) designerAudit.setAid(CurrentUser.getCurrentAid());
         if(designerAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
+        if(!CommTool.isNotBlank(designerAudit.getNickName())) return new Response(false, "操作失败，设计师昵称不能为空。");
 
-        Response response = new Response(true);
+        designerAudit.setStatus(DataDef.DesignerStatus.WAIT);
+
         int rt = designerAuditMapper.addDesignerAudit(designerAudit);
         if(rt == 0) return new Response(false);
 
+        Designer designer = new Designer();
+        designer.setAid(designerAudit.getAid());
+        designer.setStatus(DataDef.DesignerStatus.WAIT);
+        rt = designerMapper.setDesigner(designer);
+        if (rt == 0) return new Response(false, "更改设计师状态失败，请联系管理员。");
+
+        Response response = new Response(true);
         response.setData(new ResParam("designerAuditSql", sql.addDesignerAudit(designerAudit)));
         return response;
     }

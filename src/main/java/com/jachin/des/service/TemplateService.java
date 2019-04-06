@@ -1,6 +1,6 @@
 package com.jachin.des.service;
 
-import com.jachin.des.entity.DataDef;
+import com.jachin.des.def.DataDef;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.Template;
 import com.jachin.des.entity.TemplateAudit;
@@ -18,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Jachin
@@ -42,39 +40,54 @@ public class TemplateService {
     TemplateSql sql = new TemplateSql();
 
     // 业务逻辑代码
-    public Response uploadImg(MultipartFile file, HttpServletRequest request){
+    public Response uploadImg(MultipartFile file, int imgType){
         try {
-            //目前这里是写死的本地硬盘路径
-            String path = CommTool.imgUrl + "/Template/";
+            // 根据上传的图片类型，存放到不同的文件夹下
+            String folder = DataDef.getFolderType(imgType);
+            if (folder.isEmpty()) return new Response(false, "指定的图片类型错误。");
+            //资源文件的存放路径
+            String path = CommTool.imgUrl + folder;
             //获取文件名称
             String fileName = file.getOriginalFilename();
             //获取文件名后缀
             String suffix = fileName.substring(file.getOriginalFilename().lastIndexOf("."));
-            suffix = suffix.toLowerCase();
-            if(suffix.equals(".jpg") || suffix.equals(".jpeg") || suffix.equals(".png") || suffix.equals(".gif")){
-                fileName = UUID.randomUUID().toString().replace("-","")+suffix;
-                File targetFile = new File(path, fileName);
-                if(!targetFile.getParentFile().exists()){    //注意，判断父级路径是否存在
-                    targetFile.getParentFile().mkdirs();
-                }
-                //保存
-                try {
-                    file.transferTo(targetFile);
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    return new Response(false, "上传失败！");
-                }
-                //项目url，这里可以使用常量或者去数据字典获取相应的url前缀；
-                String fileUrl= request.getContextPath() + "/img/Template/" + fileName;
+            suffix = suffix.toLowerCase();  // 后缀统一转小写
+            // 如果不是图片
+            if(!CommTool.isPicture(suffix)) return new Response(false, "图片格式有误，请上传.jpg、.png、.jpeg格式的文件");
+
+            // 通过MD5获取文件名
+            String fileMD5String = CommTool.getFileMD5String(file);
+            if(fileMD5String.isEmpty()) return new Response(false, "文件转码失败。");
+            fileName = fileMD5String + suffix;
+
+            File targetFile = new File(path, fileName);
+            if(targetFile.exists()){    // 通过MD5获取的文件名唯一，所以如果要创建的文件存在的话，说明文件重复，直接返回文件名即可。
                 Response response = new Response(true, "上传成功");
-                ResParam resParam = new ResParam("fileUrl", fileUrl);
-
-                response.setData(resParam);
-
+                // 返回存放到数据库的图片URL
+                String fileUrl= folder + fileName;
+                response.setData(new ResParam("fileUrl", fileUrl));
                 return response;
-            }else{
-                return new Response(false, "图片格式有误，请上传.jpg、.png、.jpeg格式的文件");
             }
+
+            if(!targetFile.getParentFile().exists()){    //注意，判断父级路径是否存在
+                if(!targetFile.getParentFile().mkdirs())
+                    return new Response(false, "文件上传失败。");
+            }
+            //如果文件不重复，则保存
+            try {
+                file.transferTo(targetFile);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return new Response(false, "上传失败！");
+            }
+            // 返回存放到数据库的图片URL
+            String fileUrl= folder + fileName;
+
+            Response response = new Response(true, "上传成功");
+            response.setData(new ResParam("fileUrl", fileUrl));
+
+            return response;
+
         } catch (Exception e) {
             return new Response(false,"上传失败");
         }
