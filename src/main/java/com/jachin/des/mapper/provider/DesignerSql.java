@@ -1,6 +1,6 @@
 package com.jachin.des.mapper.provider;
 
-import com.jachin.des.entity.DataDef;
+import com.jachin.des.def.DataDef;
 import com.jachin.des.entity.Designer;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.util.CommTool;

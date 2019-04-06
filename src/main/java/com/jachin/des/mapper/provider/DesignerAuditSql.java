@@ -69,8 +69,6 @@ public class DesignerAuditSql {
     }
 
     public String addDesignerAudit(DesignerAudit designerAudit) {
-        int aid = designerAudit.getAid();
-        int status = designerAudit.getStatus();
         designerAudit.setTime(CommTool.getNowTime());
         String nickName = designerAudit.getNickName();
         String reason = designerAudit.getReason();

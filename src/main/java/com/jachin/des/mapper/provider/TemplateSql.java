@@ -20,6 +20,7 @@ public class TemplateSql {
     public String getTemplateList(SearchArg searchArg) {
         int tempId = searchArg.getTempId();
         int aid = searchArg.getAid();
+        int status = searchArg.getStatus();
         String title = searchArg.getTitle();
         String begTime = searchArg.getBegTime();
         String endTime = searchArg.getEndTime();
@@ -31,6 +32,7 @@ public class TemplateSql {
 
         if(aid>0) sql = String.format("%s AND aid=%d", sql, aid);
         if(tempId>0) sql = String.format("%s AND tempId=%d", sql, tempId);
+        if(status>0) sql = String.format("%s AND status=%d", sql, status);
         if(CommTool.isNotBlank(begTime)) sql = String.format("%s AND time>'%s'", sql, begTime);
         if(CommTool.isNotBlank(endTime)) sql = String.format("%s AND time<'%s'", sql, endTime);
         if(CommTool.isNotBlank(title)) sql += " AND title LIKE '%"+ title +"%'";
