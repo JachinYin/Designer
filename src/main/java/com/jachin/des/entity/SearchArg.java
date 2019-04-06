@@ -25,6 +25,8 @@ public class SearchArg {
     private String columns;       // 排序列
     private boolean comp;         // 是否规则
 
+    private String extra;
+
     public SearchArg() {
     }
 
@@ -162,6 +164,14 @@ public class SearchArg {
         this.comp = desc;
     }
 
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
     @Override
     public String toString() {
         return "SearchArg{" +
@@ -181,6 +191,7 @@ public class SearchArg {
                 ", distinct=" + distinct +
                 ", columns='" + columns + '\'' +
                 ", comp=" + comp +
+                ", extra='" + extra + '\'' +
                 '}';
     }
 }
