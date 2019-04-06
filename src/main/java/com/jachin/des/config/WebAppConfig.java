@@ -46,7 +46,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter implements WebMvcConfi
         if (os.toLowerCase().startsWith("win")) {  //如果是Windows系统
             registry.addResourceHandler("/img/**")
                     // /apple/**表示在磁盘apple目录下的所有资源会被解析为以下的路径
-                    .addResourceLocations("file:" + CommTool.imgUrl + "/") //媒体资源
+                    .addResourceLocations("file:" + CommTool.imgUrl + "/img/") //媒体资源
                     .addResourceLocations("classpath:/META-INF/resources/");  //swagger2页面
         } else {  //linux 和mac
             registry.addResourceHandler("/smallapple/**")
