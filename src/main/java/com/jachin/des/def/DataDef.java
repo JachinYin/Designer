@@ -59,6 +59,27 @@ public class DataDef {
         return flag;
     }
 
+    public static int getDesignerStatus(String name) {
+        int flag = -1;
+        switch (name) {
+            case "pass":
+                flag = DesignerStatus.PASS;
+                break;
+            case "back":
+                flag = DesignerStatus.BACK;
+                break;
+            case "wait":
+                flag = DesignerStatus.WAIT;
+                break;
+            case "default":
+                flag = DesignerStatus.DEFAULT;
+                break;
+            default:
+                flag = 0;
+        }
+        return flag;
+    }
+
     public static int getCashFlag(String name) {
         int flag = -1;
         switch (name) {
