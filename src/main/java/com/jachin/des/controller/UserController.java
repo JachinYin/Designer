@@ -3,7 +3,6 @@ package com.jachin.des.controller;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.User;
 import com.jachin.des.service.UserService;
-import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +28,17 @@ public class UserController {
     @PostMapping("/login")
     public Response login(SearchArg searchArg, HttpServletResponse httpResponse){
         // 用户登陆
-        Response response = userService.userLogin(searchArg);
-        if(!response.isSuccess()) return new Response(false,response.getMsg());
-
-        // 验证通过，获取token写入Cookie
-        ResParam data = (ResParam) response.getData();
-        String token = (String) data.get("TOKEN");
-
-        Cookie t_cookie = new Cookie("TOKEN", token);
-        httpResponse.addCookie(t_cookie);
-
-        response.setData(new ResParam("TOKEN", token));
+        Response response = userService.userLogin(searchArg, httpResponse);
+//        if(!response.isSuccess()) return new Response(false,response.getMsg());
+//
+//        // 验证通过，获取token写入Cookie
+//        ResParam data = (ResParam) response.getData();
+//        String token = (String) data.get("TOKEN");
+//
+//        Cookie t_cookie = new Cookie("TOKEN", token);
+//        httpResponse.addCookie(t_cookie);
+//
+//        response.setData(new ResParam("TOKEN", token));
         return response;
     }
 

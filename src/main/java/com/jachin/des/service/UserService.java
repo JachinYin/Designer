@@ -12,6 +12,8 @@ import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * @author Jachin
  * @since 2019/3/28 21:29
@@ -29,7 +31,7 @@ public class UserService {
     DesignerMapper designerMapper;
 
     // 用户登陆
-    public Response userLogin(SearchArg searchArg){
+    public Response userLogin(SearchArg searchArg, HttpServletResponse httpResponse){
         if(!CommTool.isNotBlank(searchArg.getUserName())) return new Response(false, "用户名不能为空。");
         if(!CommTool.isNotBlank(searchArg.getPassword())) return new Response(false, "密码不能为空。");
 
@@ -45,6 +47,12 @@ public class UserService {
         // 保存token至sql
         int rt = userMapper.setUser(user);
         if(rt == 0) return new Response(false);
+
+        // 验证通过，获取token写入Cookie
+//        ResParam data = (ResParam) response.getData();
+//        String token = (String) data.get("TOKEN");
+//        Cookie t_cookie = new Cookie("TOKEN", token);
+//        httpResponse.addCookie(t_cookie);
 
         Response response = new Response(true, "登陆成功");
         ResParam resParam = new ResParam("TOKEN", token);

@@ -38,8 +38,4 @@ public class TestController {
         response.setData(resParam);
         return response;
     }
-    @GetMapping("getTest2")
-    public Response getTest2(SearchArg searchArg){
-        return userService.userLogin(searchArg);
-    }
 }
