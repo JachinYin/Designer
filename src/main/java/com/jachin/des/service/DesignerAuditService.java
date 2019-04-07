@@ -13,6 +13,7 @@ import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,23 +32,48 @@ public class DesignerAuditService {
 
     DesignerAuditSql sql = new DesignerAuditSql();
 
+    @Transactional // 设计师审核逻辑
+    public Response doDesignerAudit(DesignerAudit designerAudit, String typeName) {
+        int status = DataDef.getDesignerStatus(typeName);
+        if(!(status == DataDef.DesignerStatus.PASS || status == DataDef.DesignerStatus.BACK))
+            return new Response(false, "请求参数错误");
+
+        int aid = designerAudit.getAid();
+        if(aid < 1) return new Response(false, "账号ID错误。");
+
+        SearchArg searchArg = new SearchArg();
+        searchArg.setAid(aid);
+
+        // 1.插入审核记录
+        searchArg.setCompColumns("time", true);
+        List<DesignerAudit> designerAuditList = designerAuditMapper.getDesignerAuditList(searchArg);
+        DesignerAudit lastDesAudit = new DesignerAudit();
+        if(designerAuditList != null) lastDesAudit = designerAuditList.get(0);
+        lastDesAudit.setStatus(status);
+        if(status == DataDef.DesignerStatus.PASS) lastDesAudit.setReason("");
+        else lastDesAudit.setReason(designerAudit.getReason());
+        int rt = designerAuditMapper.addDesignerAudit(lastDesAudit);
+        if(rt == 0) return new Response(false);
+
+        // 2.更改设计师状态
+        Designer designer = new Designer();
+        designer.setAid(aid);
+        designer.setStatus(status);
+        rt = designerMapper.setDesigner(designer);
+        if(rt == 0) return new Response(false);
+        return new Response(true);
+    }
+
     /**
      * 审核设计师
      * 对于当前的业务，只有两种可能：
      * 1.基于通过业务的修改
      * 2.基于打回业务的修改
      * 然而最终，都是对审核记录表的新增操作
-     */
+     *
     public Response doDesignerAudit(DesignerAudit designerAudit, String typeName) {
         int type = DataDef.getTemplateStatus(typeName);
         if(type == 0) return new Response(false, "请求参数错误");
-
-        /*
-        * 通过
-        * 1.
-        *
-         */
-
         int aid = designerAudit.getAid();
         SearchArg searchArg = new SearchArg();
         searchArg.setAid(aid);
@@ -70,6 +96,7 @@ public class DesignerAuditService {
         if(rt == 0) return new Response(false);
         return new Response(true);
     }
+     */
 
     // =====基础查改增删=====
 

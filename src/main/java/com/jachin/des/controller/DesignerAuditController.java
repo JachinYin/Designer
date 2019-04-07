@@ -7,6 +7,7 @@ import com.jachin.des.service.DesignerService;
 import com.jachin.des.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -22,7 +23,12 @@ public class DesignerAuditController {
     @Autowired
     DesignerAuditService designerAuditService;
 
-    // 分佣管理
+    @GetMapping("/doDesignerAudit/{type}")// 设计师审核通过
+    public Response doDesignerAudit(DesignerAudit designerAudit,@PathVariable("type")String type){
+        return designerAuditService.doDesignerAudit(designerAudit, type);
+    }
+
+    // 分佣管理获取列表数据
     @GetMapping("/getCashDesList")
     public Response getCashDesList(SearchArg searchArg){
         return designerService.getCashDesList(searchArg);
@@ -40,13 +46,13 @@ public class DesignerAuditController {
         return designerService.getDesigner(searchArg);
     }
 
-    // 设计师前台获取设计师审核记录
+    // 前台获取设计师审核记录
     @GetMapping("/getDesignerAuditList")
     public Response getDesignerList(SearchArg searchArg){
         return designerAuditService.getDesignerAuditList(searchArg);
     }
 
-    // 设计师前台，提交审核
+    // 前台提交审核
     @GetMapping("/addDesignerAudit")
     public Response addDesignerAudit(DesignerAudit designerAudit){
         return designerAuditService.addDesignerAudit(designerAudit);
