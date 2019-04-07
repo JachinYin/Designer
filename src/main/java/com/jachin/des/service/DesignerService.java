@@ -105,6 +105,7 @@ public class DesignerService {
 
 
         // 获取设计师审核表的记录
+        searchArg.setCompColumns("time", true);
         List<DesignerAudit> list = designerAuditMapper.getDesignerAuditList(searchArg);
 
         Response response = new Response(true, "获取设计师信息");
