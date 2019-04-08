@@ -91,7 +91,6 @@ public class CashFlowService {
         searchArg.setCompColumns("time", true);
         // 这个拿到的会是单纯的现金流表的数据
         List<CashFlow> cashFlowList = cashFlowMapper.getCashFlowList(searchArg);
-        System.out.println(searchArg);
         // 这个是最终返回的数据集
         List<ResParam> list = new ArrayList<>();
 

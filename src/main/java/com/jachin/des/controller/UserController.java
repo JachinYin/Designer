@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -27,19 +26,7 @@ public class UserController {
 
     @PostMapping("/login")
     public Response login(SearchArg searchArg, HttpServletResponse httpResponse){
-        // 用户登陆
-        Response response = userService.userLogin(searchArg, httpResponse);
-//        if(!response.isSuccess()) return new Response(false,response.getMsg());
-//
-//        // 验证通过，获取token写入Cookie
-//        ResParam data = (ResParam) response.getData();
-//        String token = (String) data.get("TOKEN");
-//
-//        Cookie t_cookie = new Cookie("TOKEN", token);
-//        httpResponse.addCookie(t_cookie);
-//
-//        response.setData(new ResParam("TOKEN", token));
-        return response;
+        return userService.userLogin(searchArg, httpResponse);
     }
 
     @GetMapping("/register")
@@ -49,10 +36,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public Response logout(HttpServletResponse httpResponse){
-        Cookie t_cookie = new Cookie("TOKEN", "");
-        t_cookie.setMaxAge(0);
-        httpResponse.addCookie(t_cookie);
-        return new Response(true);
+        return userService.userLogout();
     }
 
 }

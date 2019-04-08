@@ -5,10 +5,7 @@ import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.User;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.UserMapper;
-import com.jachin.des.util.CommTool;
-import com.jachin.des.util.JwtUtils;
-import com.jachin.des.util.ResParam;
-import com.jachin.des.util.Response;
+import com.jachin.des.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +56,12 @@ public class UserService {
         resParam.put("AID", user.getAid());
         response.setData(resParam);
         return response;
+    }
+
+    // 用户登出
+    public Response userLogout(){
+        int aid = CurrentUser.getCurrentAid();
+        return new Response(true);
     }
 
     // 用户注册服务

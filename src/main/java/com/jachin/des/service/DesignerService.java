@@ -151,7 +151,6 @@ public class DesignerService {
         int rt = designerMapper.setDesigner(designer);
         if(rt == 0) return new Response(false, "更新失败。");
 
-        System.out.println(designer);
         ResParam resParam = new ResParam();
         resParam.put("sql", designerSql.setDesigner(designer));
         response.setData(resParam);

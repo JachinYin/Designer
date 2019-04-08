@@ -50,7 +50,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
         final String token = request.getHeader(jwtProperties.getHeader());
         if (CommTool.isNotBlank(token)) {
-            logger.error("TOKEN="+token);
             //验证token是否过期,包含了验证jwt是否正确
             try {
                 boolean flag = jwtTokenUtil.isTokenExpired(token);
