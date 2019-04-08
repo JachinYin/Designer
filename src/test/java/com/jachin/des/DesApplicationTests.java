@@ -1,11 +1,11 @@
 package com.jachin.des;
 
-import com.jachin.des.entity.SearchArg;
-import com.jachin.des.mapper.provider.SqlUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Calendar;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -13,11 +13,13 @@ public class DesApplicationTests {
 
     @Test
     public void contextLoads() {
-        SearchArg searchArg = new SearchArg();
-        searchArg.setAid(1);
-
-        String user = SqlUtils.userSql.getUser(searchArg);
-        System.out.println(user);
+        int sum = 0;
+        long start = Calendar.getInstance().getTimeInMillis();
+        for(int i=0; i < 10000*10000; i++){
+            sum++;
+        }
+        long end = Calendar.getInstance().getTimeInMillis();
+        System.out.println(end-start);
     }
 
 }

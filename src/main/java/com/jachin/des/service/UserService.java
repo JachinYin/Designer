@@ -9,8 +9,6 @@ import com.jachin.des.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * @author Jachin
  * @since 2019/3/28 21:29
@@ -27,8 +25,42 @@ public class UserService {
     @Autowired
     DesignerMapper designerMapper;
 
+    // 管理员登陆
+    public Response authLogin(SearchArg searchArg){
+        if(!CommTool.isNotBlank(searchArg.getUserName())) return new Response(false, "账户名不能为空。");
+        if(!CommTool.isNotBlank(searchArg.getPassword())) return new Response(false, "密码不能为空。");
+
+
+        User user = userMapper.getUser(searchArg);
+        if(user == null) return new Response(false, "账户名或密码错误。");
+
+        if(user.getInfo() == null || user.getInfo().isEmpty()) return new Response(false, "您不是管理员");
+
+        // 验证通过，发放token
+        final String randomKey = jwtUtils.getRandomKey();
+        // 为客户端生成 jwt
+        final String token = jwtUtils.generateToken(String.valueOf(user.getAid()), randomKey);
+        if(token.isEmpty()) return new Response(false, "系统错误。");
+        user.setToken(token);
+        // 保存token至sql
+        int rt = userMapper.setUser(user);
+        if(rt == 0) return new Response(false);
+
+        // 验证通过，获取token写入Cookie
+//        ResParam data = (ResParam) response.getData();
+//        String token = (String) data.get("TOKEN");
+//        Cookie t_cookie = new Cookie("TOKEN", token);
+//        httpResponse.addCookie(t_cookie);
+
+        Response response = new Response(true, "登陆成功");
+        ResParam resParam = new ResParam("TOKEN", token);
+        resParam.put("AID", user.getAid());
+        response.setData(resParam);
+        return response;
+    }
+
     // 用户登陆
-    public Response userLogin(SearchArg searchArg, HttpServletResponse httpResponse){
+    public Response userLogin(SearchArg searchArg){
         if(!CommTool.isNotBlank(searchArg.getUserName())) return new Response(false, "用户名不能为空。");
         if(!CommTool.isNotBlank(searchArg.getPassword())) return new Response(false, "密码不能为空。");
 

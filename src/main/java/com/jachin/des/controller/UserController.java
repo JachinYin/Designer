@@ -26,7 +26,12 @@ public class UserController {
 
     @PostMapping("/login")
     public Response login(SearchArg searchArg, HttpServletResponse httpResponse){
-        return userService.userLogin(searchArg, httpResponse);
+        return userService.userLogin(searchArg);
+    }
+
+    @PostMapping("/authLogin")
+    public Response login_auth(SearchArg searchArg, HttpServletResponse httpResponse){
+        return userService.authLogin(searchArg);
     }
 
     @GetMapping("/register")
