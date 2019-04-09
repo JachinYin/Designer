@@ -48,7 +48,7 @@ public class TemplateController {
         return templateService.addTemplate(template);
     }
 
-    @GetMapping("delTemplate")
+    @GetMapping("/delTemplate")
     public Response delTemplate(SearchArg searchArg){
         return templateService.delTemplate(searchArg.getTempId());
     }
