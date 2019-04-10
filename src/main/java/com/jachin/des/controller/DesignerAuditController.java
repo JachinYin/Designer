@@ -40,12 +40,6 @@ public class DesignerAuditController {
         return designerAuditService.getDesignersAuditList(searchArg);
     }
 
-    // 根据 aid 获取设计师信息【用于设计师审核详情】
-    @GetMapping("/getDesigner")
-    public Response getDesigner(SearchArg searchArg){
-        return designerService.getDesigner(searchArg);
-    }
-
     // 前台获取设计师审核记录
     @GetMapping("/getDesignerAuditList")
     public Response getDesignerList(SearchArg searchArg){
