@@ -35,7 +35,7 @@ public class CommTool {
 
     // 存放图片资源的路径
     public static final String imgUrl = "E:/Code/Graduation/Designer";
-//    public static final String imgUrl = "D:/Jachin/Graduation/Code/Designer/Img";
+//    public static final String imgUrl = "D:/Jachin/Graduation/Code/Designer";
 //    public static
     public static Logger getLogger(Class myClass){
         return LoggerFactory.getLogger(myClass);
