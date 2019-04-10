@@ -22,7 +22,7 @@ public class JwtProperties {
 
     private String md5Key = "SecretKey";
 
-    private String ignoreUrl = "/login,/register,/img,/logout";
+    private String ignoreUrl = "/login,/register,/img,/logout,/authLogin";
 
     public String getHeader() {
         return header;
