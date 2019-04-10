@@ -176,7 +176,7 @@ public class TemplateAuditService {
             //2.
             Template template = new Template();
             template.setTempId(tempId);
-            template.setStatus(DataDef.TemplateStatus.BACK);
+            template.setStatus(DataDef.TemplateStatus.PASS);
             rt = templateMapper.setTemplate(template);
             if(rt == 0) return new Response(false, "打回成功，请联系管理员。");
 
