@@ -6,11 +6,11 @@ import com.jachin.des.service.DesignerAuditService;
 import com.jachin.des.service.DesignerService;
 import com.jachin.des.util.CommTool;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 /**
@@ -20,11 +20,11 @@ import javax.validation.Valid;
 @RestController
 public class DesignerController {
 
-    @Autowired
-    DesignerService designerService;
+    @Resource
+    private DesignerService designerService;
 
-    @Autowired
-    DesignerAuditService designerAuditService;
+    @Resource
+    private DesignerAuditService designerAuditService;
 
     // 根据 aid 获取设计师信息【用于设计师审核详情】
     @GetMapping("/getDesigner")

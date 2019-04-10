@@ -5,10 +5,11 @@ import com.jachin.des.entity.SearchArg;
 import com.jachin.des.service.DesignerAuditService;
 import com.jachin.des.service.DesignerService;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author Jachin
@@ -17,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DesignerAuditController {
 
-    @Autowired
-    DesignerService designerService;
+    @Resource
+    private DesignerService designerService;
 
-    @Autowired
-    DesignerAuditService designerAuditService;
+    @Resource
+    private DesignerAuditService designerAuditService;
 
     @GetMapping("/doDesignerAudit/{type}")// 设计师审核通过
     public Response doDesignerAudit(DesignerAudit designerAudit,@PathVariable("type")String type){

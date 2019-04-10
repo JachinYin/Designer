@@ -5,9 +5,10 @@ import com.jachin.des.entity.Template;
 import com.jachin.des.service.TemplateAuditService;
 import com.jachin.des.service.TemplateService;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.annotation.Resource;
 
 /**
  * @author Jachin
@@ -16,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 public class TemplateController {
 
-    @Autowired
-    TemplateAuditService templateAuditService;
-    @Autowired
-    TemplateService templateService;
+    @Resource
+    private TemplateAuditService templateAuditService;
+    @Resource
+    private TemplateService templateService;
 
     @RequestMapping("/upload/{imgType}")
     public Response uploadImg(@RequestParam(required = false) MultipartFile file, @PathVariable("imgType")int imgType){

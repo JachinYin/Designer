@@ -6,10 +6,11 @@ import com.jachin.des.service.TemplateAuditService;
 import com.jachin.des.util.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author Jachin
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TemplateAuditController {
     private static final Logger log = LoggerFactory.getLogger(TemplateAuditController.class);
 
-    @Autowired
-    TemplateAuditService templateAuditService;
+    @Resource
+    private TemplateAuditService templateAuditService;
 
     // 业务逻辑请求
 

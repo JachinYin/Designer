@@ -5,9 +5,10 @@ import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.service.TemplateAuditService;
 import com.jachin.des.service.UserService;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author Jachin
@@ -16,14 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @Autowired
-    TemplateAuditMapper templateAuditMapper;
+    @Resource
+    private TemplateAuditMapper templateAuditMapper;
 
-    @Autowired
-    TemplateAuditService templateAuditService;
+    @Resource
+    private TemplateAuditService templateAuditService;
 
-    @Autowired
-    UserService userService;
+    @Resource
+    private UserService userService;
 
     @GetMapping("getTest")
     public Response getTest(SearchArg searchArg){

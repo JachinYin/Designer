@@ -13,9 +13,9 @@ import com.jachin.des.util.CommTool;
 import com.jachin.des.util.CurrentUser;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,14 +26,14 @@ import java.util.List;
 @Service
 public class DesignerService {
 
-    @Autowired
-    DesignerMapper designerMapper;
+    @Resource
+    private DesignerMapper designerMapper;
 
-    @Autowired
-    DesignerAuditMapper designerAuditMapper;
+    @Resource
+    private DesignerAuditMapper designerAuditMapper;
 
-    @Autowired
-    CashFlowMapper cashFlowMapper;
+    @Resource
+    private CashFlowMapper cashFlowMapper;
 
     DesignerSql designerSql = new DesignerSql();
 

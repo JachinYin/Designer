@@ -6,8 +6,9 @@ import com.jachin.des.entity.User;
 import com.jachin.des.mapper.DesignerMapper;
 import com.jachin.des.mapper.UserMapper;
 import com.jachin.des.util.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * @author Jachin
@@ -16,14 +17,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
 
-    @Autowired
-    JwtUtils jwtUtils;
+    @Resource
+    private JwtUtils jwtUtils;
 
-    @Autowired
-    UserMapper userMapper;
+    @Resource
+    private UserMapper userMapper;
 
-    @Autowired
-    DesignerMapper designerMapper;
+    @Resource
+    private DesignerMapper designerMapper;
 
     // 管理员登陆
     public Response authLogin(SearchArg searchArg){

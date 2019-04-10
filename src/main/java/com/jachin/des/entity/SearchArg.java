@@ -11,6 +11,8 @@ public class SearchArg {
     private int tempId;
     private int status;
     private int type;
+    private int year;
+    private int month;
     private String title;
     private String designer;
     private String begTime;
@@ -56,6 +58,22 @@ public class SearchArg {
 
     public int getStatus() {
         return status;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public void setMonth(int month) {
+        this.month = month;
     }
 
     public void setStatus(int status) {

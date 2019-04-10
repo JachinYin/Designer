@@ -7,9 +7,9 @@ import com.jachin.des.util.JwtUtils;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,10 +23,10 @@ import java.io.IOException;
 public class AuthFilter extends OncePerRequestFilter {
     private final Logger logger = LoggerFactory.getLogger(AuthFilter.class);
 
-    @Autowired
+    @Resource
     private JwtUtils jwtTokenUtil;
 
-    @Autowired
+    @Resource
     private JwtProperties jwtProperties;
 
     @Override

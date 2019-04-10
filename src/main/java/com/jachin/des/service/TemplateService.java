@@ -14,10 +14,10 @@ import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.util.List;
 
@@ -30,11 +30,11 @@ public class TemplateService {
 
     private static final Logger log = LoggerFactory.getLogger(TemplateService.class);
 
-    @Autowired
-    TemplateMapper templateMapper;
+    @Resource
+    private TemplateMapper templateMapper;
 
-    @Autowired
-    TemplateAuditMapper templateAuditMapper;
+    @Resource
+    private TemplateAuditMapper templateAuditMapper;
 
     // for debug
     TemplateSql sql = new TemplateSql();

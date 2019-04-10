@@ -2,9 +2,9 @@ package com.jachin.des.util;
 
 import com.jachin.des.config.JwtProperties;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @Component
 public class JwtUtils {
 
-    @Autowired
+    @Resource
     private JwtProperties jwtProperties;
 
     /**

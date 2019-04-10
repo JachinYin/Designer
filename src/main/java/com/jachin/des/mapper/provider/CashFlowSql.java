@@ -12,6 +12,21 @@ import org.apache.ibatis.jdbc.SQL;
  */
 public class CashFlowSql {
 
+    // 获取设计师收入(财务打款)
+    public String getTotalWithdraw(SearchArg searchArg) {
+        int year = searchArg.getYear();
+        int month = searchArg.getMonth();
+        String sql = "SELECT s.aid, SUM(s.price) as price,d.bankAcct, d.cardHolder, d.openBank, d.phone, d.realName";
+        sql += " from cashFlow s join designer d on d.aid=s.aid";
+        sql += " WHERE type=" + DataDef.CashFlag.WITHDRAW;
+        if (year > 0) sql += " AND YEAR(time)=" + year;
+        if (month > 0) sql += " AND MONTH(time)=" + month;
+        sql += " GROUP BY aid";
+        sql += " ORDER BY price DESC";
+        return sql;
+    }
+
+
     // 获取指定aid的模板收入记录(后台分佣管理使用)
     public String getCashFlowWithTempTitle(SearchArg searchArg){
         int aid = searchArg.getAid();
