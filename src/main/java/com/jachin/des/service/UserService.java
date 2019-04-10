@@ -148,8 +148,4 @@ public class UserService {
         Response response = new Response(true);
         return response;
     }
-
-    public User getUser(SearchArg searchArg){
-        return userMapper.getUser(searchArg);
-    }
 }
