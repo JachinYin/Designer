@@ -9,10 +9,10 @@ import com.jachin.des.util.CommTool;
 import com.jachin.des.util.CurrentUser;
 import com.jachin.des.util.ResParam;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,59 +25,25 @@ import java.util.List;
 @Service
 public class CashFlowService {
 
-    @Autowired
-    CashFlowMapper cashFlowMapper;
+    @Resource
+    private CashFlowMapper cashFlowMapper;
 
-    @Autowired
-    DesignerMapper designerMapper;
+    @Resource
+    private DesignerMapper designerMapper;
 
-    @Autowired
-    TemplateMapper templateMapper;
+    @Resource
+    private TemplateMapper templateMapper;
 
-    // 应该无用
-    public Response addCashFlow(CashFlow cashFlow, String typeName){
-        int type = DataDef.getCashFlag(typeName);
-        if(type == 0) return new Response(false, "操作失败，没有指定操作类型");
-        if(cashFlow.getPrice() < 0) return new Response(false, "操作失败，金额错误。");
-
-        /*
-         * 收入
-         * 1.新增收入记录
-         * 2.修改设计师总收入，余额
-         * 提现
-         * 1.新增提现记录
-         * 2.修改设计师余额
-         */
-
-        int aid = cashFlow.getAid(); // 拿aid是为了要对设计师表进行修改
-        SearchArg searchArg = new SearchArg();
-        searchArg.setAid(aid);
-        Designer designer = designerMapper.getDesigner(searchArg);
-        if(designer == null) return new Response(false); // 如果拿不到设计师信息，说明是数据库读取出错
-
-        if(type == DataDef.CashFlag.INCOME){
-            int balance = designer.getBalance() + cashFlow.getPrice();
-            int totalPrice = designer.getTotalPrice() + cashFlow.getPrice();
-            Designer data = new Designer();
-            data.setAid(aid);
-            data.setBalance(balance);
-            data.setTotalPrice(totalPrice);
-            int rt = designerMapper.setDesigner(data);
-            if(rt == 0) return new Response(false);
-            return new Response(true);
-        }
-        else if(type == DataDef.CashFlag.WITHDRAW){
-            int balance = designer.getBalance() + cashFlow.getPrice();
-            Designer data = new Designer();
-            data.setAid(aid);
-            data.setBalance(balance);
-            int rt = designerMapper.setDesigner(data);
-            if(rt == 0) return new Response(false);
-            return new Response(true);
-        }
-
-        return new Response(false);
+    // 获取设计师提现总额
+    public Response getTotalWithdraw(SearchArg searchArg){
+        if(searchArg.getYear() < 1) return new Response(false);
+        if(searchArg.getMonth() < 1) return new Response(false);
+        List<ResParam> totalWithdraw = cashFlowMapper.getTotalWithdraw(searchArg);
+        Response response = new Response(true);
+        response.setData(new ResParam("totalList", totalWithdraw));
+        return response;
     }
+
 
     // 设计师后台获取提现记录
     public Response getCashFlowShowList(SearchArg searchArg){
@@ -130,23 +96,8 @@ public class CashFlowService {
         searchArg.setCompColumns("time", true);
         List<CashFlow> cashRecList = cashFlowMapper.getCashFlowList(searchArg);
         resParam.put("cashRecList", cashRecList);
-        // 获取模板收入记录
-        /*searchArg.setType(0); // 清空模板，使用自定义字符串
-        searchArg.setExtra(String.format("AND type IN (%d, %d)", DataDef.CashFlag.INCOME, DataDef.CashFlag.DELTA_PRICE));
-        List<CashFlow> cashTempList = cashFlowMapper.getCashFlowList(searchArg);
-        List<Integer> tempIdList = new ArrayList<>();
-        for (CashFlow cashFlow : cashTempList) {
-            tempIdList.add(cashFlow.getTempId());
-        }
-        ResParam tempIdName = new ResParam();
-        List<Template> templateList = templateMapper.getTemplateList(searchArg);
-        for (Template template : templateList) {
-            if(tempIdList.contains(template.getTempId())){
-                tempIdName.put(String.valueOf(template.getTempId()), template.getTitle());
-            }
-        }*/
-        List<CashFlowWithTitle> cashTempList = cashFlowMapper.getCashFlowWithTempTitle(searchArg);
 
+        List<CashFlowWithTitle> cashTempList = cashFlowMapper.getCashFlowWithTempTitle(searchArg);
         resParam.put("cashTempList", cashTempList);
 
 
@@ -162,6 +113,51 @@ public class CashFlowService {
         CashFlow cashFlow = cashFlowMapper.getCashFlow(searchArg);
         response.setData(new ResParam("cashFlowData", cashFlow));
         return response;
+    }
+
+    // 应该无用
+    public Response addCashFlow(CashFlow cashFlow, String typeName){
+        int type = DataDef.getCashFlag(typeName);
+        if(type == 0) return new Response(false, "操作失败，没有指定操作类型");
+        if(cashFlow.getPrice() < 0) return new Response(false, "操作失败，金额错误。");
+
+        /*
+         * 收入
+         * 1.新增收入记录
+         * 2.修改设计师总收入，余额
+         * 提现
+         * 1.新增提现记录
+         * 2.修改设计师余额
+         */
+
+        int aid = cashFlow.getAid(); // 拿aid是为了要对设计师表进行修改
+        SearchArg searchArg = new SearchArg();
+        searchArg.setAid(aid);
+        Designer designer = designerMapper.getDesigner(searchArg);
+        if(designer == null) return new Response(false); // 如果拿不到设计师信息，说明是数据库读取出错
+
+        if(type == DataDef.CashFlag.INCOME){
+            int balance = designer.getBalance() + cashFlow.getPrice();
+            int totalPrice = designer.getTotalPrice() + cashFlow.getPrice();
+            Designer data = new Designer();
+            data.setAid(aid);
+            data.setBalance(balance);
+            data.setTotalPrice(totalPrice);
+            int rt = designerMapper.setDesigner(data);
+            if(rt == 0) return new Response(false);
+            return new Response(true);
+        }
+        else if(type == DataDef.CashFlag.WITHDRAW){
+            int balance = designer.getBalance() + cashFlow.getPrice();
+            Designer data = new Designer();
+            data.setAid(aid);
+            data.setBalance(balance);
+            int rt = designerMapper.setDesigner(data);
+            if(rt == 0) return new Response(false);
+            return new Response(true);
+        }
+
+        return new Response(false);
     }
 
     // 获取现金表记录

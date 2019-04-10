@@ -4,9 +4,10 @@ import com.jachin.des.entity.CashFlow;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.service.CashFlowService;
 import com.jachin.des.util.Response;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * @author Jachin
@@ -15,8 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CashFlowController {
 
-    @Autowired
-    CashFlowService cashFlowService;
+    @Resource
+    private CashFlowService cashFlowService;
+
+    // 获取设计师提现总数
+    @GetMapping("/getTotalWithdraw")
+    public Response getTotalWithdraw(SearchArg searchArg){
+        return cashFlowService.getTotalWithdraw(searchArg);
+    }
 
     // 提现
     @GetMapping("/withdraw")

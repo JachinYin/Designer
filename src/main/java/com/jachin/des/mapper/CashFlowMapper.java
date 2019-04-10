@@ -4,6 +4,7 @@ import com.jachin.des.entity.CashFlow;
 import com.jachin.des.entity.CashFlowWithTitle;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.mapper.provider.CashFlowSql;
+import com.jachin.des.util.ResParam;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -11,6 +12,9 @@ import java.util.List;
 // 在每个 mapper 上添加这个注解，或者在启动类添加@MapperScan("com.xxx.mapper")
 @Mapper
 public interface CashFlowMapper {
+    // 获取设计师收入(财务打款)
+    @SelectProvider(type = CashFlowSql.class, method = "getTotalWithdraw")
+    public List<ResParam> getTotalWithdraw(SearchArg searchArg);
 
     // 后台获取模板收入记录
     @SelectProvider(type = CashFlowSql.class, method = "getCashFlowWithTempTitle")
