@@ -3,7 +3,6 @@ package com.jachin.des.service;
 import com.jachin.des.def.DataDef;
 import com.jachin.des.entity.SearchArg;
 import com.jachin.des.entity.Template;
-import com.jachin.des.entity.TemplateAudit;
 import com.jachin.des.mapper.TemplateAuditMapper;
 import com.jachin.des.mapper.TemplateMapper;
 import com.jachin.des.mapper.provider.SqlUtils;
@@ -131,41 +130,28 @@ public class TemplateService {
      * 根据模板Id更新模板信息
      */
     public Response setTemplate(Template template){
-
         if(template.getTempId() < 1){
             log.error(template.toString());
             return new Response(false, "更新失败，模板ID错误");
         }
-
         // 在每一次执行更新操作前，都需要保证该模板是可以更新的（即状态为 打回、待提交）
         SearchArg searchArg = new SearchArg();
         searchArg.setTempId(template.getTempId());
-        searchArg.setCompColumns("time", true);
-        List<TemplateAudit> templateAuditList = templateAuditMapper.getTemplateAuditList(searchArg);
-        if(!templateAuditList.isEmpty()) {
-            TemplateAudit templateAudit = templateAuditList.get(0);
-            if (templateAudit != null) {
-                // 如果为 通过 或 待审核状态，则说明不能修改
-                if (templateAudit.getStatus() == DataDef.TemplateStatus.PASS) {
-                    return new Response(false, "模板已通过审核，不能再进行修改");
-                }
-                if (templateAudit.getStatus() == DataDef.TemplateStatus.WAIT) {
-                    return new Response(false, "模板已提交审核，请耐心等待结果");
-                }
+        Template oldTemplate = templateMapper.getTemplate(searchArg);
+        if (oldTemplate != null) {
+            // 如果为 通过 或 待审核状态，则说明不能修改
+            if (oldTemplate.getStatus() == DataDef.TemplateStatus.PASS) {
+                return new Response(false, "模板已通过审核，不能再进行修改");
+            }
+            if (oldTemplate.getStatus() == DataDef.TemplateStatus.WAIT) {
+                return new Response(false, "模板已提交审核，请耐心等待结果");
             }
         }
-
-        Response response = new Response(true, "更新成功");
-
+        // 如果状态正确，则执行更新操作
         int rt = templateMapper.setTemplate(template);
         if(rt == 0) return new Response(false, "更新失败(TemplateService Error)");
 
-
-        ResParam resParam = new ResParam();
-        resParam.put("sql", sql.setTemplate(template));
-        response.setData(resParam);
-
-        return response;
+        return new Response(true, "更新成功");
     }
 
     /**

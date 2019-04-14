@@ -137,6 +137,7 @@ public class DesignerAuditService {
         return new Response(true);
     }
 
+    @Transactional
     public Response addDesignerAudit(DesignerAudit designerAudit){
         int aid = designerAudit.getAid();
         if(aid < 1) designerAudit.setAid(CurrentUser.getCurrentAid());
