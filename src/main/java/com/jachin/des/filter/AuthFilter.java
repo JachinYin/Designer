@@ -75,7 +75,7 @@ public class AuthFilter extends OncePerRequestFilter {
             }catch (Exception ignore){}
 
             CurrentUser.setCurrentAid(aidInt);
-            logger.info("-----当前用户AID----"+aid);
+//            logger.info("-----当前用户AID----"+aid);
         }
 
         chain.doFilter(request, response);
