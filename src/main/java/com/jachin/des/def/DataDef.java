@@ -30,7 +30,7 @@ public class DataDef {
         public static final int DELTA_PRICE = 3;       // 模板差价
     }
 
-    // 设计师状态
+    // 图片上传类型
     public static final class FolderType {
         public static final int PHOTO = 101;       // 头像
         public static final int FRONT = 201;       // 正面

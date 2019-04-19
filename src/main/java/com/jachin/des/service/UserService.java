@@ -93,7 +93,7 @@ public class UserService {
 
     // 用户登出
     public Response userLogout(){
-        int aid = CurrentUser.getCurrentAid();
+//        int aid = CurrentUser.getCurrentAid();
         return new Response(true);
     }
 

@@ -54,17 +54,17 @@ public class AuthFilter extends OncePerRequestFilter {
             try {
                 boolean flag = jwtTokenUtil.isTokenExpired(token);
                 if (flag) {
-                    response.getWriter().write("{\"success\": false, \"msg\": \"Token异常!\", \"code\": 101}");
+                    response.getWriter().write("{\"success\": false, \"msg\": \"登陆信息错误，请重新登陆\", \"code\": 101}");
                     return;
                 }
             } catch (JwtException e) {
                 //有异常就是token解析失败
-                response.getWriter().write("{\"success\": false, \"msg\": \"token解析失败!\", \"code\": 101}");
+                response.getWriter().write("{\"success\": false, \"msg\": \"登陆信息错误，请重新登陆\", \"code\": 101}");
                 return;
             }
         } else {
             //header没有TOKEN字段
-            response.getWriter().write("{\"success\": false, \"msg\": \"header无TOKEN!\", \"code\": 101}");
+            response.getWriter().write("{\"success\": false, \"msg\": \"请先登陆\", \"code\": 101}");
             return;
         }
         String aid = jwtTokenUtil.getAidFromToken(token);

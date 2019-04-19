@@ -52,6 +52,7 @@ public class TemplateSql {
         String info = template.getInfo();
         String imgUrl = template.getImgUrl();
         String content = template.getContent();
+        template.setTime(CommTool.getNowTime());
 
         return new SQL() {{
             UPDATE(TableDef.TEMPLATE);

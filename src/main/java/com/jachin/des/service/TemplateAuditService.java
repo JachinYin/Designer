@@ -264,6 +264,7 @@ public class TemplateAuditService {
     /**
      * 前台添加模板审核记录
      */
+    @Transactional
     public Response addTemplateAudit(TemplateAudit templateAudit){
         if(templateAudit.getTempId() < 1) return new Response(false, "操作失败，模板ID错误");
         if(templateAudit.getAid() < 1) return new Response(false, "操作失败，账户ID错误");
@@ -283,6 +284,12 @@ public class TemplateAuditService {
         Response response = new Response(true, "操作成功");
         int rt = templateAuditMapper.addTemplateAudit(templateAudit);
         if(rt == 0) return new Response(false, "操作失败");
+
+        Template template = new Template();
+        template.setTempId(templateAudit.getTempId());
+        template.setStatus(DataDef.TemplateStatus.WAIT);
+        rt = templateMapper.setTemplate(template);
+        if(rt==0) return new Response(false);
 
         response.setData(new ResParam("templateAuditSql", templateAuditSql.addTemplateAudit(templateAudit)));
         return response;
